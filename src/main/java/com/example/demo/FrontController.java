@@ -23,19 +23,22 @@ public class FrontController {
     @PostMapping("/user/{email}/survey")
     public String getNewSurvey(@PathVariable("email") String email,
                                @RequestBody String body) {
-        return "1";
+        var id = dbService.addNewSurvey(email, body);
+        return id;
     }
 
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
                                @PathVariable("survey_id") String survey_id) {
-        return "1";
+        var surveyBody = dbService.getSurvey(email, survey_id);
+        return surveyBody;
     }
 
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String getAnswerOnSurvey(@PathVariable("email") String email,
                                     @PathVariable("survey_id") String survey_id,
                                     @RequestBody String body) {
-        return "1";
+        var id = dbService.addResponseOnSurvey(email, survey_id, body);
+        return id;
     }
 }

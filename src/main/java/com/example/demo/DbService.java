@@ -28,38 +28,49 @@ public class DbService {
         return id;
     }
 
-//    public List<ScheduleDto> getAll() {
-//        var rowSet = jdbcTemplateMap.queryForRowSet("SELECT * FROM schedule");
-//        return convertToDto(rowSet);
-//    }
-//
-//    public void deleteAll() {
-//        jdbcTemplateMap.update("DELETE FROM schedule");
-//    }
-//
-//    public LocalDate getMinAvailableDate() {
-//        var rs = jdbcTemplateMap.queryForRowSet("SELECT MIN(date) FROM schedule");
-//        rs.next();
-//        try {
-//            return rs.getTimestamp(1).toLocalDateTime().toLocalDate();
-//        } catch (NullPointerException e) {
-//            return LocalDate.of(1999, 12, 24);
-//        }
-//    }
-//
-//    private List<ScheduleDto> convertToDto(SqlRowSet rowSet) {
-//        var listDto = new ArrayList<ScheduleDto>();
-//        while (rowSet.next()) {
-//            listDto.add(new ScheduleDto(
-//                    rowSet.getInt("pair_number"),
-//                    rowSet.getString("auditory"),
-//                    rowSet.getDate("date").toLocalDate(),
-//                    rowSet.getString("lesson"),
-//                    rowSet.getString("lesson_type"),
-//                    rowSet.getString("group_name"),
-//                    rowSet.getString("teacher")
-//            ));
-//        }
-//        return listDto;
-//    }
+    public String getUserIdByEmail(String email) {
+        var rowSet = jdbcTemplateMap.queryForRowSet("SELECT * FROM users WHERE users.email = ?", email);
+        rowSet.next();
+        var id = rowSet.getString("id");
+        return id;
+    }
+
+    public String addNewSurvey(String email, String survey) {
+        var userId = getUserIdByEmail(email);
+        var id = String.valueOf(survey.hashCode());
+        try {
+            jdbcTemplateMap.update(
+                    "INSERT INTO " +
+                            "surveys (id, user_id, survey) " +
+                            "VALUES (?, ?, ?)",
+                    id, userId, survey);
+        } catch (DuplicateKeyException ignored) {
+
+        }
+        return id;
+    }
+
+    public String getSurvey(String email, String survey_id) {
+        var userId = getUserIdByEmail(email);
+        var rowSet = jdbcTemplateMap.queryForRowSet("SELECT * FROM surveys WHERE id = ? and user_id = ?",
+                survey_id, userId);
+        rowSet.next();
+        var survey = rowSet.getString("survey");
+        return survey;
+    }
+
+    public String addResponseOnSurvey(String email, String survey_id, String body) {
+        var userId = getUserIdByEmail(email);
+        var id = String.valueOf(body.hashCode());
+        try {
+            jdbcTemplateMap.update(
+                    "INSERT INTO " +
+                            "responses (id, survey_id, user_id, response) " +
+                            "VALUES (?, ?, ?, ?)",
+                    id, survey_id, userId, body);
+        } catch (DuplicateKeyException ignored) {
+
+        }
+        return id;
+    }
 }
