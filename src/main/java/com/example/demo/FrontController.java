@@ -14,12 +14,14 @@ public class FrontController {
         this.dbService = dbService;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/user/{email}")
     public String getNewUser(@PathVariable("email") String email) {
         var id = dbService.addUser(email);
         return id;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/user/{email}/survey")
     public String getNewSurvey(@PathVariable("email") String email,
                                @RequestBody String body) {
@@ -27,6 +29,7 @@ public class FrontController {
         return id;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
                                @PathVariable("survey_id") String survey_id) {
@@ -34,6 +37,7 @@ public class FrontController {
         return surveyBody;
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String getAnswerOnSurvey(@PathVariable("email") String email,
                                     @PathVariable("survey_id") String survey_id,
