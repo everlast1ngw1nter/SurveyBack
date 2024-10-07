@@ -1,76 +1,59 @@
 package com.example.demo;
 
+import com.example.demo.models.Response;
+import com.example.demo.models.Survey;
+import com.example.demo.models.User;
+import com.example.demo.repos.ResponseRepository;
+import com.example.demo.repos.SurveyRepository;
+import com.example.demo.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DbService {
 
-    private final JdbcTemplate jdbcTemplateMap;
+    private final ResponseRepository responseRepository;
+    private final SurveyRepository surveyRepository;
+    private final UserRepository userRepository;
 
-    public DbService(@Autowired JdbcTemplate jdbcTemplateMap) {
-        this.jdbcTemplateMap = jdbcTemplateMap;
+    @Autowired
+    public DbService(ResponseRepository responseRepository,
+                     SurveyRepository surveyRepository,
+                     UserRepository userRepository) {
+        this.responseRepository = responseRepository;
+        this.surveyRepository = surveyRepository;
+        this.userRepository = userRepository;
     }
 
     public String addUser(String email) {
-        var id = String.valueOf(email.hashCode());
+        var user = new User(email);
         try {
-            jdbcTemplateMap.update(
-                    "INSERT INTO " +
-                            "users (id, email) " +
-                            "VALUES (?, ?)",
-                    id, email);
-        } catch (DuplicateKeyException ignored) {
-
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            return "User with this email already exist";
         }
-        return id;
+        return user.getId().toString();
     }
 
-    public String getUserIdByEmail(String email) {
-        var rowSet = jdbcTemplateMap.queryForRowSet("SELECT * FROM users WHERE users.email = ?", email);
-        rowSet.next();
-        var id = rowSet.getString("id");
-        return id;
+    public Long addNewSurvey(String email, String survey) {
+        var user = userRepository.getUserByEmail(email);
+        var newSurvey = new Survey(survey, user);
+        surveyRepository.save(newSurvey);
+        return newSurvey.getId();
     }
 
-    public String addNewSurvey(String email, String survey) {
-        var userId = getUserIdByEmail(email);
-        var id = String.valueOf(survey.hashCode());
-        try {
-            jdbcTemplateMap.update(
-                    "INSERT INTO " +
-                            "surveys (id, user_id, survey) " +
-                            "VALUES (?, ?, ?)",
-                    id, userId, survey);
-        } catch (DuplicateKeyException ignored) {
-
-        }
-        return id;
+    public String getSurvey(String email, Long surveyId) {
+        var user = userRepository.getUserByEmail(email);
+        var survey = surveyRepository.getSurveyByIdAndUser(surveyId, user);
+        return survey.getSurvey();
     }
 
-    public String getSurvey(String email, String survey_id) {
-        var userId = getUserIdByEmail(email);
-        var rowSet = jdbcTemplateMap.queryForRowSet("SELECT * FROM surveys WHERE id = ? and user_id = ?",
-                survey_id, userId);
-        rowSet.next();
-        var survey = rowSet.getString("survey");
-        return survey;
-    }
-
-    public String addResponseOnSurvey(String email, String survey_id, String body) {
-        var userId = getUserIdByEmail(email);
-        var id = String.valueOf(body.hashCode());
-        try {
-            jdbcTemplateMap.update(
-                    "INSERT INTO " +
-                            "responses (id, survey_id, user_id, response) " +
-                            "VALUES (?, ?, ?, ?)",
-                    id, survey_id, userId, body);
-        } catch (DuplicateKeyException ignored) {
-
-        }
-        return id;
+    public Long addResponseOnSurvey(String email, Long surveyId, String body) {
+        var user = userRepository.getUserByEmail(email);
+        var survey = surveyRepository.getSurveyById(surveyId);
+        var response = new Response(user, survey, body);
+        responseRepository.save(response);
+        return response.getId();
     }
 }

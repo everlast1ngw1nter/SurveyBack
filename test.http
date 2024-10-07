@@ -1,6 +1,6 @@
 POST http://localhost:8080/user/jenoshima42@despair.com
 ###
-GET http://localhost:8080/user/jenoshima42@despair.com/survey/11037leon
+GET http://localhost:8080/user/jenoshima42@despair.com/survey/1
 ###
 POST http://localhost:8080/user/jenoshima42@despair.com/survey
 
@@ -44,7 +44,7 @@ POST http://localhost:8080/user/jenoshima42@despair.com/survey
       ]
 }
 ###
-POST http://localhost:8080/user/jenoshima42@despair.com/survey/11037leon/answer
+POST http://localhost:8080/user/jenoshima42@despair.com/survey/1/answer
 
 {
   "Name": "Преподаватели МатМеха",
