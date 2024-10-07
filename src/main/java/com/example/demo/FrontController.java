@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import java.awt.dnd.DnDConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,23 +25,23 @@ public class FrontController {
     public String getNewSurvey(@PathVariable("email") String email,
                                @RequestBody String body) {
         var id = dbService.addNewSurvey(email, body);
-        return id;
+        return id.toString();
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
-                               @PathVariable("survey_id") String survey_id) {
-        var surveyBody = dbService.getSurvey(email, survey_id);
+                               @PathVariable("survey_id") Long surveyId) {
+        var surveyBody = dbService.getSurvey(email, surveyId);
         return surveyBody;
     }
 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String getAnswerOnSurvey(@PathVariable("email") String email,
-                                    @PathVariable("survey_id") String survey_id,
+                                    @PathVariable("survey_id") Long surveyId,
                                     @RequestBody String body) {
-        var id = dbService.addResponseOnSurvey(email, survey_id, body);
-        return id;
+        var id = dbService.addResponseOnSurvey(email, surveyId, body);
+        return id.toString();
     }
 }
