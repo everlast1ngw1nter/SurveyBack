@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class DbService {
 
@@ -47,6 +49,14 @@ public class DbService {
         var user = userRepository.getUserByEmail(email);
         var survey = surveyRepository.getSurveyByIdAndUser(surveyId, user);
         return survey.getSurvey();
+    }
+
+    public String[] getSurveys(String email) {
+        var user = userRepository.getUserByEmail(email);
+        var surveys = surveyRepository.getSurveyByUser(user);
+        return surveys.stream()
+                .map(Survey::getSurvey)
+                .toArray(String[]::new);
     }
 
     public Long addResponseOnSurvey(String email, Long surveyId, String body) {

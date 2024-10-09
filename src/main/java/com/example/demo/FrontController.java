@@ -3,6 +3,9 @@ package com.example.demo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class FrontController {
 
@@ -13,14 +16,12 @@ public class FrontController {
         this.dbService = dbService;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/user/{email}")
     public String getNewUser(@PathVariable("email") String email) {
         var id = dbService.addUser(email);
         return id;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/user/{email}/survey")
     public String getNewSurvey(@PathVariable("email") String email,
                                @RequestBody String body) {
@@ -28,7 +29,6 @@ public class FrontController {
         return id.toString();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
                                @PathVariable("survey_id") Long surveyId) {
@@ -36,7 +36,12 @@ public class FrontController {
         return surveyBody;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/user/{email}/surveys")
+    public String[] returnSurveys(@PathVariable("email") String email) {
+        var surveysBody = dbService.getSurveys(email);
+        return surveysBody;
+    }
+
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String getAnswerOnSurvey(@PathVariable("email") String email,
                                     @PathVariable("survey_id") Long surveyId,
