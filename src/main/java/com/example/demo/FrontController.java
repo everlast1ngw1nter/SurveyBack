@@ -24,7 +24,7 @@ public class FrontController {
     @PostMapping("/user/{email}/survey")
     public String getNewSurvey(@PathVariable("email") String email,
                                @RequestBody String body) {
-        var id = dbService.addNewSurvey(email, body);
+        var id = dbService.addSurvey(email, body);
         return id.toString();
     }
 

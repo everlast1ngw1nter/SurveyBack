@@ -31,12 +31,12 @@ public class DbService {
         try {
             userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
-            return "User with this email already exist";
+            return "User with this email already exists";
         }
         return user.getId().toString();
     }
 
-    public Long addNewSurvey(String email, String survey) {
+    public Long addSurvey(String email, String survey) {
         var user = userRepository.getUserByEmail(email);
         var newSurvey = new Survey(survey, user);
         surveyRepository.save(newSurvey);
@@ -44,8 +44,7 @@ public class DbService {
     }
 
     public String getSurvey(String email, Long surveyId) {
-        var user = userRepository.getUserByEmail(email);
-        var survey = surveyRepository.getSurveyByIdAndUser(surveyId, user);
+        var survey = surveyRepository.getSurveyByIdAndUserEmail(surveyId, email);
         return survey.getSurvey();
     }
 
