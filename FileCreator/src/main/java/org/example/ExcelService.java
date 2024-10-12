@@ -2,7 +2,12 @@ package org.example;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
+import org.example.dto.AnswersDto;
+import org.example.dto.QuestionAnswerDto;
 import org.example.dto.SurveyDto;
+import org.example.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,15 +24,43 @@ public class ExcelService {
         this.objectMapper = objectMapper;
     }
 
-    public String generateExcelFile(String email, long surveyId) {
+    private SurveyDto getQuestionsFromSurvey(String email, long surveyId) {
         var survey = dbService.getSurvey(email, surveyId);
-        SurveyDto dto = null;
+        SurveyDto dto;
         try {
             dto = objectMapper.readValue(survey, SurveyDto.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        return dto;
+    }
 
-        return survey;
+    private List<AnswersDto> getAnswersFromResponses(String email, long surveyId) {
+        var resps = dbService.getResponses(email, surveyId);
+        return resps.stream()
+                .map(this::getAnswersFromResponse)
+                .toList();
+
+    }
+
+    private AnswersDto getAnswersFromResponse(Response response) {
+        AnswersDto dto;
+        try {
+            Map<String, QuestionAnswerDto> data = objectMapper.readValue(response.getResponse(), objectMapper.getTypeFactory().constructMapType(Map.class, String.class, QuestionAnswerDto.class));
+            var answers = data.values()
+                    .stream()
+                    .map(qaDto -> qaDto.answer)
+                    .toList();
+            dto = new AnswersDto(answers);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return dto;
+    }
+
+    public String getExcelFile(String email, long surveyId) {
+        var questions = getQuestionsFromSurvey(email, surveyId);
+        var answers = getAnswersFromResponses(email, surveyId);
+        return "1";
     }
 }

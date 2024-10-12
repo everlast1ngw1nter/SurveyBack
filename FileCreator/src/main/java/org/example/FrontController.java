@@ -20,7 +20,7 @@ public class FrontController {
     @GetMapping("/user/{email}/survey/{survey_id}/generate")
     public String getExcelFileOnResponses(@PathVariable("email") String email,
                                           @PathVariable("survey_id") Long surveyId) {
-        var generated = excelService.generateExcelFile(email, surveyId);
+        var generated = excelService.getExcelFile(email, surveyId);
         return generated;
     }
 }
