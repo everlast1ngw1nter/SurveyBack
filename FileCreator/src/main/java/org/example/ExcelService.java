@@ -2,8 +2,14 @@ package org.example;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.example.dto.AnswersDto;
 import org.example.dto.QuestionAnswerDto;
 import org.example.dto.SurveyDto;
@@ -58,9 +64,45 @@ public class ExcelService {
         return dto;
     }
 
-    public String getExcelFile(String email, long surveyId) {
+    private void addAllQuestions(Row row, SurveyDto questions) {
+        for (var i = 0; i < questions.survey.size(); i++) {
+            var currentCell = row.createCell(i);
+            currentCell.setCellValue(questions.survey.get(i).question);
+        }
+    }
+
+    private void addAnswersInRow(Row row, AnswersDto answers) {
+        for (var i = 0; i < answers.answers.size(); i++) {
+            var currentCell = row.createCell(i);
+            currentCell.setCellValue(answers.answers.get(i));
+        }
+    }
+
+    private void addAllAnswersInRows(Sheet sheet, List<AnswersDto> answers, int startRow) {
+        for (var i = startRow; i < startRow + answers.size(); i++) {
+            addAnswersInRow(sheet.createRow(i), answers.get(i - startRow));
+        }
+    }
+
+    private Workbook generateExcelFile(SurveyDto questions,  List<AnswersDto> answers) {
+        Workbook book = new XSSFWorkbook();
+        var sheet = book.createSheet("random name");
+        var row = sheet.createRow(0);
+        addAllQuestions(row, questions);
+        addAllAnswersInRows(sheet, answers, 1);
+        return book;
+    }
+
+    public byte[] getExcelFile(String email, long surveyId) {
         var questions = getQuestionsFromSurvey(email, surveyId);
         var answers = getAnswersFromResponses(email, surveyId);
-        return "1";
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try(var workbook = generateExcelFile(questions,  answers)) {
+            workbook.write(outputStream);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] excelBytes = outputStream.toByteArray();
+        return excelBytes;
     }
 }
