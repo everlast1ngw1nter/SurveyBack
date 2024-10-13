@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CreatedFilesRepository extends JpaRepository<CreatedFile, Long> {
 
-
+    CreatedFile getCreatedFileBySurveyId(Long surveyId);
 }

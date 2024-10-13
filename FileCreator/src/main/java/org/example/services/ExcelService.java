@@ -1,4 +1,4 @@
-package org.example;
+package org.example.services;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +30,8 @@ public class ExcelService {
         this.objectMapper = objectMapper;
     }
 
-    private SurveyDto getQuestionsFromSurvey(String email, long surveyId) {
-        var survey = dbService.getSurvey(email, surveyId);
+    private SurveyDto getQuestionsFromSurvey(long surveyId) {
+        var survey = dbService.getSurvey(surveyId).getSurvey();
         SurveyDto dto;
         try {
             dto = objectMapper.readValue(survey, SurveyDto.class);
@@ -86,7 +86,7 @@ public class ExcelService {
 
     private Workbook generateExcelFile(SurveyDto questions,  List<AnswersDto> answers) {
         Workbook book = new XSSFWorkbook();
-        var sheet = book.createSheet("random name");
+        var sheet = book.createSheet(questions.name);
         var row = sheet.createRow(0);
         addAllQuestions(row, questions);
         addAllAnswersInRows(sheet, answers, 1);
@@ -94,15 +94,28 @@ public class ExcelService {
     }
 
     public byte[] getExcelFile(String email, long surveyId) {
-        var questions = getQuestionsFromSurvey(email, surveyId);
+        var questions = getQuestionsFromSurvey(surveyId);
         var answers = getAnswersFromResponses(email, surveyId);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        var createdFile = dbService.getCreatedFile(surveyId);
+        if (createdFile != null && createdFile.getAnswersCount() == answers.size()) {
+            return createdFile.getFile();
+        }
+        var excelBytes = getBytesOfExcelFile(questions, answers);
+        if (createdFile != null) {
+            dbService.updateCreatedFile(createdFile, excelBytes, answers.size());
+        } else {
+            dbService.addCreatedFile(excelBytes, answers.size(), surveyId);
+        }
+        return excelBytes;
+    }
+
+    private byte[] getBytesOfExcelFile(SurveyDto questions, List<AnswersDto> answers) {
+        var outputStream = new ByteArrayOutputStream();
         try(var workbook = generateExcelFile(questions,  answers)) {
             workbook.write(outputStream);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        byte[] excelBytes = outputStream.toByteArray();
-        return excelBytes;
+        return outputStream.toByteArray();
     }
 }

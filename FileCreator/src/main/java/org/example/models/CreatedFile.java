@@ -11,27 +11,54 @@ public class CreatedFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String file;
+    private Integer answersCount;
 
     private LocalDateTime creationTime;
+
+    @ManyToOne
+    private Survey survey;
+
+    private byte[] file;
 
     public CreatedFile() {
     }
 
-    public CreatedFile(String file, LocalDateTime creationTime) {
+    public CreatedFile(byte[] file, Integer answersCount, LocalDateTime creationTime, Survey survey) {
         this.file = file;
+        this.answersCount = answersCount;
         this.creationTime = creationTime;
+        this.survey = survey;
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getFile() {
+    public byte[] getFile() {
         return file;
     }
 
     public LocalDateTime getCreationTime() {
         return creationTime;
+    }
+
+    public Integer getAnswersCount() {
+        return answersCount;
+    }
+
+    public Survey getSurvey() {
+        return survey;
+    }
+
+    public void setAnswersCount(Integer answersCount) {
+        this.answersCount = answersCount;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 }
