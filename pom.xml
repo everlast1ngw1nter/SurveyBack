@@ -13,7 +13,11 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>demo3</name>
     <description>demo3</description>
-    <packaging>jar</packaging>
+    <modules>
+        <module>MessageProcessor</module>
+        <module>FileCreator</module>
+    </modules>
+    <packaging>pom</packaging>
     <url/>
     <licenses>
         <license/>
