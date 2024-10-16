@@ -35,4 +35,8 @@ public class Survey {
     public Long getId() {
         return id;
     }
+
+    public void setSurvey(String survey) {
+        this.survey = survey;
+    }
 }

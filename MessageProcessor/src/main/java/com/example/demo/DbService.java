@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.dto.SurveyWithId;
 import com.example.demo.models.Response;
 import com.example.demo.models.Survey;
 import com.example.demo.models.User;
@@ -55,11 +56,28 @@ public class DbService {
                 .toArray(String[]::new);
     }
 
+    public SurveyWithId[] getSurveysWithId(String email) {
+        var surveys = surveyRepository.getSurveyByUserEmail(email);
+        return surveys.stream()
+                .map(x -> new SurveyWithId(x.getId(), x.getSurvey()))
+                .toArray(SurveyWithId[]::new);
+    }
+
     public Long addResponseOnSurvey(String email, Long surveyId, String body) {
         var user = userRepository.getUserByEmail(email);
         var survey = surveyRepository.getSurveyById(surveyId);
         var response = new Response(user, survey, body);
         responseRepository.save(response);
         return response.getId();
+    }
+
+    public void deleteSurvey(Long surveyId) {
+        surveyRepository.deleteById(surveyId);
+    }
+
+    public void updateSurvey(Long surveyId, String body) {
+        var survey = surveyRepository.getSurveyById(surveyId);
+        survey.setSurvey(body);
+        surveyRepository.save(survey);
     }
 }
