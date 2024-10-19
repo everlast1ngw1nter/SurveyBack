@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "surveys")
@@ -15,6 +16,14 @@ public class Survey {
 
     @Column(columnDefinition = "TEXT")
     private String survey;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "survey_id")
+    private Set<Response> responses;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "survey_id")
+    private Set<CreatedFile> createdFile;
 
     public Survey() {
     }

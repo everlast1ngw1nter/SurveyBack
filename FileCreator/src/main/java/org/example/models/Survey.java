@@ -1,6 +1,7 @@
 package org.example.models;
 
 import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "surveys")
@@ -15,6 +16,14 @@ public class Survey {
 
     @Column(columnDefinition = "TEXT")
     private String survey;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "survey_id")
+    private Set<Response> responses;
+
+    @OneToMany(orphanRemoval = true)
+    @JoinColumn(name = "survey_id")
+    private Set<CreatedFile> createdFile;
 
     public Survey() {
     }
@@ -35,5 +44,8 @@ public class Survey {
     public Long getId() {
         return id;
     }
-}
 
+    public void setSurvey(String survey) {
+        this.survey = survey;
+    }
+}
