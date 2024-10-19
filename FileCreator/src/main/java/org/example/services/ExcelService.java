@@ -10,28 +10,29 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.example.DbClient;
 import org.example.dto.AnswersDto;
 import org.example.dto.QuestionAnswerDto;
+import org.example.dto.ResponseDto;
 import org.example.dto.SurveyDto;
-import org.example.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ExcelService {
 
-    private final DbService dbService;
+    private final DbClient dbClient;
 
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public ExcelService(DbService dbService, ObjectMapper objectMapper) {
-        this.dbService = dbService;
+    public ExcelService(DbClient dbClient, ObjectMapper objectMapper) {
+        this.dbClient = dbClient;
         this.objectMapper = objectMapper;
     }
 
     private SurveyDto getQuestionsFromSurvey(long surveyId) {
-        var survey = dbService.getSurvey(surveyId).getSurvey();
+        var survey = dbClient.getSurvey(surveyId);
         SurveyDto dto;
         try {
             dto = objectMapper.readValue(survey, SurveyDto.class);
@@ -41,18 +42,19 @@ public class ExcelService {
         return dto;
     }
 
-    private List<AnswersDto> getAnswersFromResponses(String email, long surveyId) {
-        var resps = dbService.getResponses(email, surveyId);
+    private List<AnswersDto> getAnswersFromResponses(long surveyId) {
+        var resps = dbClient.getResponses(surveyId);
         return resps.stream()
+                .map(ResponseDto::response)
                 .map(this::getAnswersFromResponse)
                 .toList();
 
     }
 
-    private AnswersDto getAnswersFromResponse(Response response) {
+    private AnswersDto getAnswersFromResponse(String response) {
         AnswersDto dto;
         try {
-            Map<String, QuestionAnswerDto> data = objectMapper.readValue(response.getResponse(), objectMapper.getTypeFactory().constructMapType(Map.class, String.class, QuestionAnswerDto.class));
+            Map<String, QuestionAnswerDto> data = objectMapper.readValue(response, objectMapper.getTypeFactory().constructMapType(Map.class, String.class, QuestionAnswerDto.class));
             var answers = data.values()
                     .stream()
                     .map(qaDto -> qaDto.answer)
@@ -93,18 +95,18 @@ public class ExcelService {
         return book;
     }
 
-    public byte[] getExcelFile(String email, long surveyId) {
+    public byte[] getExcelFile(long surveyId) {
         var questions = getQuestionsFromSurvey(surveyId);
-        var answers = getAnswersFromResponses(email, surveyId);
-        var createdFile = dbService.getCreatedFile(surveyId);
-        if (createdFile != null && createdFile.getAnswersCount() == answers.size()) {
-            return createdFile.getFile();
+        var answers = getAnswersFromResponses(surveyId);
+        var createdFile = dbClient.getCreatedFile(surveyId);
+        if (createdFile != null && createdFile.answersCount() == answers.size()) {
+            return createdFile.file();
         }
         var excelBytes = getBytesOfExcelFile(questions, answers);
         if (createdFile != null) {
-            dbService.updateCreatedFile(createdFile, excelBytes, answers.size());
+            dbClient.updateCreatedFile(createdFile, excelBytes, answers.size());
         } else {
-            dbService.addCreatedFile(excelBytes, answers.size(), surveyId);
+            dbClient.addCreatedFile(excelBytes, answers.size(), surveyId);
         }
         return excelBytes;
     }

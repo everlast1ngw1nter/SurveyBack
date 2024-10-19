@@ -8,47 +8,47 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class FrontController {
 
-    private final DbService dbService;
+    private final DbClient dbClient;
 
     @Autowired
-    public FrontController(DbService dbService) {
-        this.dbService = dbService;
+    public FrontController(DbClient dbClient) {
+        this.dbClient = dbClient;
     }
 
     @PostMapping("/user/{email}")
-    public String getNewUser(@PathVariable("email") String email) {
-        var id = dbService.addUser(email);
+    public String addNewUser(@PathVariable("email") String email) {
+        var id = dbClient.addUser(email);
         return id;
     }
 
     @PostMapping("/user/{email}/survey")
-    public String getNewSurvey(@PathVariable("email") String email,
+    public String addNewSurvey(@PathVariable("email") String email,
                                @RequestBody String body) {
-        var id = dbService.addSurvey(email, body);
+        var id = dbClient.addSurvey(email, body);
         return id.toString();
     }
 
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
                                @PathVariable("survey_id") Long surveyId) {
-        var surveyBody = dbService.getSurvey(email, surveyId);
+        var surveyBody = dbClient.getSurvey(surveyId);
         return surveyBody;
     }
 
     @DeleteMapping("/survey/{survey_id}")
     public void deleteSurvey(@PathVariable("survey_id") Long surveyId) {
-        dbService.deleteSurvey(surveyId);
+        dbClient.deleteSurvey(surveyId);
     }
 
     @PatchMapping("/survey/{survey_id}")
     public void updateSurvey(@PathVariable("survey_id") Long surveyId,
                              @RequestBody String body) {
-        dbService.updateSurvey(surveyId, body );
+        dbClient.updateSurvey(surveyId, body);
     }
 
     @GetMapping("/user/{email}/surveys")
     public SurveyWithId[] returnSurveys(@PathVariable("email") String email) {
-        var surveysBody = dbService.getSurveysWithId(email);
+        var surveysBody = dbClient.getSurveysWithId(email);
         return surveysBody;
     }
 
@@ -56,7 +56,7 @@ public class FrontController {
     public String getAnswerOnSurvey(@PathVariable("email") String email,
                                     @PathVariable("survey_id") Long surveyId,
                                     @RequestBody String body) {
-        var id = dbService.addResponseOnSurvey(email, surveyId, body);
+        var id = dbClient.addResponse(email, surveyId, body);
         return id.toString();
     }
 }

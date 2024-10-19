@@ -24,7 +24,7 @@ public class FrontController {
     @GetMapping("/user/{email}/survey/{survey_id}/generate")
     public ResponseEntity<byte[]> getExcelFileOnResponses(@PathVariable("email") String email,
                                             @PathVariable("survey_id") Long surveyId) {
-        var generated = excelService.getExcelFile(email, surveyId);
+        var generated = excelService.getExcelFile(surveyId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=sample.xlsx");
         headers.add("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");

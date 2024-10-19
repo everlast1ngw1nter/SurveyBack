@@ -16,6 +16,7 @@
     <modules>
         <module>MessageProcessor</module>
         <module>FileCreator</module>
+        <module>DatabaseService</module>
     </modules>
     <packaging>pom</packaging>
     <url/>
@@ -53,7 +54,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <dependency>
