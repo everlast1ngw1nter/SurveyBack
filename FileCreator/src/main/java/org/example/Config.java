@@ -13,6 +13,12 @@ public class Config {
     @Value("${file_creator.api.key}")
     private String apiKey;
 
+    @Value("${file_creator.database_url}")
+    private String databaseUrl;
+
+    @Value("${file_creator.api.header}")
+    private String apiHeader;
+
     @Bean
     public ObjectMapper objectMapper() {
         var objectMapper = new ObjectMapper();
@@ -24,8 +30,8 @@ public class Config {
     public WebClient dbWebClient() {
         return WebClient
                 .builder()
-                .baseUrl("http://localhost:8082")
-                .defaultHeader("API-KEY", apiKey)
+                .baseUrl(databaseUrl)
+                .defaultHeader(apiHeader, apiKey)
                 .build();
     }
 }

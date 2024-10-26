@@ -15,11 +15,14 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     @Value("${database_service.api.key}")
     private String apiKey;
 
+    @Value("${database_service.api.header}")
+    private String apiHeader;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        var outerApiKey = request.getHeader("API-KEY");
+        var outerApiKey = request.getHeader(apiHeader);
         if (apiKey.equals(outerApiKey)) {
             filterChain.doFilter(request, response);
         } else {

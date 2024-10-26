@@ -11,12 +11,18 @@ public class Config {
     @Value("${message_processor.api.key}")
     private String apiKey;
 
+    @Value("${message_processor.api.header}")
+    private String apiHeader;
+
+    @Value("${message_processor.database_url}")
+    private String databaseUrl;
+
     @Bean
     public WebClient dbWebClient() {
         return WebClient
                 .builder()
-                .baseUrl("http://localhost:8082")
-                .defaultHeader("API-KEY", apiKey)
+                .baseUrl(databaseUrl)
+                .defaultHeader(apiHeader, apiKey)
                 .build();
     }
 }
