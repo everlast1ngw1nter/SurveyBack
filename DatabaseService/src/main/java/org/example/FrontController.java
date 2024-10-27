@@ -2,10 +2,10 @@ package org.example;
 
 import java.util.List;
 import java.util.UUID;
+import org.example.dto.CreatedFileDto;
 import org.example.dto.FileInfoDto;
 import org.example.dto.ResponseDto;
-import org.example.models.CreatedFile;
-import org.example.models.Survey;
+import org.example.dto.SurveyWithId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +49,10 @@ public class FrontController {
     }
 
     @GetMapping("/file/{survey_id}")
-    public CreatedFile getCreatedFile(@PathVariable("survey_id") UUID surveyId) {
+    public CreatedFileDto getCreatedFile(@PathVariable("survey_id") UUID surveyId) {
         var createdFile = dbService.getCreatedFile(surveyId);
-        return createdFile;
+        var dto = new CreatedFileDto(createdFile.getId(), createdFile.getFile(), createdFile.getAnswersCount(), createdFile.getCreationTime());
+        return dto;
     }
 
 
@@ -68,9 +69,11 @@ public class FrontController {
     }
 
     @GetMapping("/user/{email}/surveys")
-    public Survey[] getSurveys(@PathVariable("email") String email) {
+    public SurveyWithId[] getSurveys(@PathVariable("email") String email) {
         var surveysBody = dbService.getSurveys(email);
-        return surveysBody.toArray(Survey[]::new);
+        return surveysBody.stream()
+                .map(val -> new SurveyWithId(val.getId(), val.getSurvey()))
+                .toArray(SurveyWithId[]::new);
     }
 
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
