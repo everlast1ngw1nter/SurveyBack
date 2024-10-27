@@ -2,3 +2,5 @@
    (postgres - имя юзера и пароль)
 2. Теперь приложение работает 
 3. Примеры запросов в test.http
+4. Для работы приложения нужно задать переменную окружения в Settings -> Appearance & Behaviour -> 
+Path variables. Name = SURVEY_API_KEY, Value - любое.
