@@ -2,14 +2,15 @@ package org.example.models;
 
 import jakarta.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "surveys")
 public class Survey {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne
     private User user;
@@ -41,7 +42,7 @@ public class Survey {
         return survey;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 

@@ -1,6 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.dto.SurveyWithId;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,18 +31,18 @@ public class FrontController {
 
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
-                               @PathVariable("survey_id") Long surveyId) {
+                               @PathVariable("survey_id") UUID surveyId) {
         var surveyBody = dbClient.getSurvey(surveyId);
         return surveyBody;
     }
 
     @DeleteMapping("/survey/{survey_id}")
-    public void deleteSurvey(@PathVariable("survey_id") Long surveyId) {
+    public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {
         dbClient.deleteSurvey(surveyId);
     }
 
     @PatchMapping("/survey/{survey_id}")
-    public void updateSurvey(@PathVariable("survey_id") Long surveyId,
+    public void updateSurvey(@PathVariable("survey_id") UUID surveyId,
                              @RequestBody String body) {
         dbClient.updateSurvey(surveyId, body);
     }
@@ -54,7 +55,7 @@ public class FrontController {
 
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String getAnswerOnSurvey(@PathVariable("email") String email,
-                                    @PathVariable("survey_id") Long surveyId,
+                                    @PathVariable("survey_id") UUID surveyId,
                                     @RequestBody String body) {
         var id = dbClient.addResponse(email, surveyId, body);
         return id.toString();

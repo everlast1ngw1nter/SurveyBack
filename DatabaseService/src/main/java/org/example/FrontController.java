@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.List;
+import java.util.UUID;
 import org.example.dto.FileInfoDto;
 import org.example.dto.ResponseDto;
 import org.example.models.CreatedFile;
@@ -33,13 +34,13 @@ public class FrontController {
     }
 
     @GetMapping("/survey/{survey_id}")
-    public String getSurvey(@PathVariable("survey_id") Long surveyId) {
+    public String getSurvey(@PathVariable("survey_id") UUID surveyId) {
         var surveyBody = dbService.getSurvey(surveyId);
         return surveyBody.getSurvey();
     }
 
     @GetMapping("/responses/{survey_id}")
-    public List<ResponseDto> getResponses(@PathVariable("survey_id") Long surveyId) {
+    public List<ResponseDto> getResponses(@PathVariable("survey_id") UUID surveyId) {
         var responses = dbService.getResponses(surveyId);
         var repsArr = responses.stream()
                 .map(x -> new ResponseDto(x.getResponse()))
@@ -48,19 +49,20 @@ public class FrontController {
     }
 
     @GetMapping("/file/{survey_id}")
-    public CreatedFile getCreatedFile(@PathVariable("survey_id") Long surveyId) {
+    public CreatedFile getCreatedFile(@PathVariable("survey_id") UUID surveyId) {
         var createdFile = dbService.getCreatedFile(surveyId);
         return createdFile;
     }
 
 
     @DeleteMapping("/survey/{survey_id}")
-    public void deleteSurvey(@PathVariable("survey_id") Long surveyId) {
-        dbService.deleteSurvey(surveyId);
+    public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {
+        // TO DO
+//        dbService.deleteSurvey(surveyId);
     }
 
     @PatchMapping("/survey/{survey_id}")
-    public void updateSurvey(@PathVariable("survey_id") Long surveyId,
+    public void updateSurvey(@PathVariable("survey_id") UUID surveyId,
                              @RequestBody String body) {
         dbService.updateSurvey(surveyId, body);
     }
@@ -73,20 +75,20 @@ public class FrontController {
 
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String addAnswerOnSurvey(@PathVariable("email") String email,
-                                    @PathVariable("survey_id") Long surveyId,
+                                    @PathVariable("survey_id") UUID surveyId,
                                     @RequestBody String body) {
         var id = dbService.addResponseOnSurvey(email, surveyId, body);
         return id.toString();
     }
 
     @PostMapping("/file/{survey_id}")
-    public void addCreatedFile(@PathVariable("survey_id") Long surveyId,
+    public void addCreatedFile(@PathVariable("survey_id") UUID surveyId,
                                @RequestBody FileInfoDto body) {
         dbService.addCreatedFile(surveyId, body.file(), body.answersCount());
     }
 
     @PatchMapping("/file/{survey_id}")
-    public void updateCreatedFile(@PathVariable("survey_id") Long surveyId,
+    public void updateCreatedFile(@PathVariable("survey_id") UUID surveyId,
                                @RequestBody FileInfoDto body) {
         dbService.updateCreatedFile(surveyId, body.file(), body.answersCount());
     }

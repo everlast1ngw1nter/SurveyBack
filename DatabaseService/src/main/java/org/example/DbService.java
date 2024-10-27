@@ -2,6 +2,7 @@ package org.example;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import org.example.models.CreatedFile;
 import org.example.models.Response;
 import org.example.models.Survey;
@@ -34,29 +35,29 @@ public class DbService {
         this.userRepository = userRepository;
     }
 
-    public Survey getSurvey(Long surveyId) {
+    public Survey getSurvey(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
         return survey;
     }
 
-    public List<Response> getResponses(Long surveyId) {
+    public List<Response> getResponses(UUID surveyId) {
         var resps = responseRepository.getResponsesBySurveyId(surveyId);
         return resps;
     }
 
-    public CreatedFile getCreatedFile(Long surveyId) {
+    public CreatedFile getCreatedFile(UUID surveyId) {
         var createdFile = createdFilesRepository.getCreatedFileBySurveyId(surveyId);
         return createdFile;
     }
 
 
-    public void addCreatedFile(Long surveyId, byte[] file, Integer answersCount) {
+    public void addCreatedFile(UUID surveyId, byte[] file, Integer answersCount) {
         var survey = getSurvey(surveyId);
         var newCreatedFile = new CreatedFile(file, answersCount, LocalDateTime.now(), survey);
         createdFilesRepository.save(newCreatedFile);
     }
 
-    public void updateCreatedFile(Long surveyId, byte[] file, Integer answersCount) {
+    public void updateCreatedFile(UUID surveyId, byte[] file, Integer answersCount) {
         var oldFile = getCreatedFile(surveyId);
         oldFile.setFile(file);
         oldFile.setAnswersCount(answersCount);
@@ -74,7 +75,7 @@ public class DbService {
         return user.getId().toString();
     }
 
-    public Long addSurvey(String email, String survey) {
+    public UUID addSurvey(String email, String survey) {
         var user = userRepository.getUserByEmail(email);
         var newSurvey = new Survey(survey, user);
         surveyRepository.save(newSurvey);
@@ -86,7 +87,7 @@ public class DbService {
         return surveys;
     }
 
-    public Long addResponseOnSurvey(String email, Long surveyId, String body) {
+    public Long addResponseOnSurvey(String email, UUID surveyId, String body) {
         var user = userRepository.getUserByEmail(email);
         var survey = surveyRepository.getSurveyById(surveyId);
         var response = new Response(user, survey, body);
@@ -98,7 +99,7 @@ public class DbService {
         surveyRepository.deleteById(surveyId);
     }
 
-    public void updateSurvey(Long surveyId, String body) {
+    public void updateSurvey(UUID surveyId, String body) {
         var survey = surveyRepository.getSurveyById(surveyId);
         survey.setSurvey(body);
         surveyRepository.save(survey);

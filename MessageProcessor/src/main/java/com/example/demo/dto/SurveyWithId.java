@@ -1,4 +1,6 @@
 package com.example.demo.dto;
 
-public record SurveyWithId(Long id, String survey) {
+import java.util.UUID;
+
+public record SurveyWithId(UUID id, String survey) {
 }

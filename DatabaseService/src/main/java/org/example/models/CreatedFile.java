@@ -2,13 +2,14 @@ package org.example.models;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "created_files")
 public class CreatedFile {
 
     @Id
-    private Long id;
+    private UUID id;
 
     private Integer answersCount;
 
@@ -30,7 +31,7 @@ public class CreatedFile {
         this.survey = survey;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
