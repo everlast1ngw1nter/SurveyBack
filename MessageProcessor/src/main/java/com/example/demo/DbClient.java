@@ -1,9 +1,12 @@
 package com.example.demo;
 
+import com.example.demo.dto.AccessData;
 import com.example.demo.dto.SurveyWithId;
 import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -82,5 +85,15 @@ public class DbClient {
                         .collectList()
                         .block())
                 .toArray(SurveyWithId[]::new);
+    }
+
+    public void addSurveyAccess(UUID surveyId, AccessData accessData) {
+        dbWebClient
+                .post()
+                .uri("/survey/{id}/access", surveyId)
+                .bodyValue(accessData)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
     }
 }

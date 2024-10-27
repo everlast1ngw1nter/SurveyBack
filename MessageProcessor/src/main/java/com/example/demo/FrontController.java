@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.dto.AccessData;
 import com.example.demo.dto.SurveyWithId;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,14 @@ public class FrontController {
         var surveyBody = dbClient.getSurvey(surveyId);
         return surveyBody;
     }
+
+    @PostMapping(value = "/user/{email}/survey/{survey_id}/access", consumes = "application/json")
+    public void addSurveyAccess(@PathVariable("email") String email,
+                                  @PathVariable("survey_id") UUID surveyId,
+                                  @RequestBody AccessData accessData) {
+        dbClient.addSurveyAccess(surveyId, accessData);
+    }
+
 
     @DeleteMapping("/survey/{survey_id}")
     public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {

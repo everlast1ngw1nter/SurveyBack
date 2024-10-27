@@ -2,10 +2,7 @@ package org.example;
 
 import java.util.List;
 import java.util.UUID;
-import org.example.dto.CreatedFileDto;
-import org.example.dto.FileInfoDto;
-import org.example.dto.ResponseDto;
-import org.example.dto.SurveyWithId;
+import org.example.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +28,12 @@ public class FrontController {
                                @RequestBody String body) {
         var id = dbService.addSurvey(email, body);
         return id.toString();
+    }
+
+    @PostMapping("/survey/{survey_id}/access")
+    public void addSurveyAccess(@PathVariable("survey_id") UUID surveyId,
+                                @RequestBody AccessData accessData) {
+        dbService.addSurveyAccess(surveyId, accessData);
     }
 
     @GetMapping("/survey/{survey_id}")

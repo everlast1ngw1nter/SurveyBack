@@ -3,6 +3,7 @@ package org.example;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import org.example.dto.AccessData;
 import org.example.models.CreatedFile;
 import org.example.models.Response;
 import org.example.models.Survey;
@@ -80,6 +81,17 @@ public class DbService {
         var newSurvey = new Survey(survey, user);
         surveyRepository.save(newSurvey);
         return newSurvey.getId();
+    }
+
+    public void addSurveyAccess(UUID surveyId, AccessData body) {
+        var survey = surveyRepository.getSurveyById(surveyId);
+        survey.setStatus(body.status());
+        survey.setLimited(body.isLimited());
+        if (body.timeIntervals() != null && body.timeIntervals().size() == 2) {
+            survey.setFrom(body.timeIntervals().get(0));
+            survey.setTo(body.timeIntervals().get(1));
+        }
+        surveyRepository.save(survey);
     }
 
     public List<Survey> getSurveys(String email) {
