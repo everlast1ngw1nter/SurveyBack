@@ -37,11 +37,15 @@ public class FrontController {
         return surveyBody;
     }
 
-    @PostMapping(value = "/user/{email}/survey/{survey_id}/access", consumes = "application/json")
-    public void addSurveyAccess(@PathVariable("email") String email,
-                                  @PathVariable("survey_id") UUID surveyId,
-                                  @RequestBody AccessData accessData) {
+    @PostMapping(value = "/survey/{survey_id}/access", consumes = "application/json")
+    public void addSurveyAccess(@PathVariable("survey_id") UUID surveyId,
+                                @RequestBody AccessData accessData) {
         dbClient.addSurveyAccess(surveyId, accessData);
+    }
+
+    @GetMapping("/survey/{survey_id}/access")
+    public String getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
+        return dbClient.getSurveyAccess(surveyId);
     }
 
 

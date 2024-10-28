@@ -76,3 +76,7 @@ Content-Type: application/json
   "isLimited": false,
   "timeIntervals" : ["2024-10-26T14:00:00+05:00", "2024-10-27T15:30:00+05:00"]
 }
+
+###
+
+GET http://localhost:8080/survey/aa8a8b04-6eb8-487e-9ec0-9f6d0ce81391/access

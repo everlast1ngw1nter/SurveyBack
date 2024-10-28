@@ -5,8 +5,6 @@ import com.example.demo.dto.SurveyWithId;
 import java.util.Objects;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -94,6 +92,15 @@ public class DbClient {
                 .bodyValue(accessData)
                 .retrieve()
                 .bodyToMono(Void.class)
+                .block();
+    }
+
+    public String getSurveyAccess(UUID surveyId) {
+        return dbWebClient
+                .get()
+                .uri("/survey/{id}/access", surveyId)
+                .retrieve()
+                .bodyToMono(String.class)
                 .block();
     }
 }

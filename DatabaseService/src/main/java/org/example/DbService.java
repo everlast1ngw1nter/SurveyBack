@@ -94,6 +94,12 @@ public class DbService {
         surveyRepository.save(survey);
     }
 
+    public AccessData getSurveyAccess(UUID surveyId) {
+        var survey = surveyRepository.getSurveyById(surveyId);
+        var access = new AccessData(survey.getStatus(), survey.isLimited(), List.of(survey.getFrom(), survey.getTo()));
+        return access;
+    }
+
     public List<Survey> getSurveys(String email) {
         var surveys = surveyRepository.getSurveyByUserEmail(email);
         return surveys;

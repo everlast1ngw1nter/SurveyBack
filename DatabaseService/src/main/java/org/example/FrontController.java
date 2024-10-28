@@ -36,6 +36,11 @@ public class FrontController {
         dbService.addSurveyAccess(surveyId, accessData);
     }
 
+    @GetMapping("/survey/{survey_id}/access")
+    public AccessData getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
+        return dbService.getSurveyAccess(surveyId);
+    }
+
     @GetMapping("/survey/{survey_id}")
     public String getSurvey(@PathVariable("survey_id") UUID surveyId) {
         var surveyBody = dbService.getSurvey(surveyId);
