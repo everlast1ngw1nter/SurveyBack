@@ -1,5 +1,6 @@
-package com.example.demo;
+package com.example.demo.controllers;
 
+import com.example.demo.DbClient;
 import com.example.demo.dto.AccessData;
 import com.example.demo.dto.SurveyWithId;
 import java.util.UUID;
@@ -8,19 +9,13 @@ import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-public class FrontController {
+public class SurveyController {
 
     private final DbClient dbClient;
 
     @Autowired
-    public FrontController(DbClient dbClient) {
+    public SurveyController(DbClient dbClient) {
         this.dbClient = dbClient;
-    }
-
-    @PostMapping("/user/{email}")
-    public String addNewUser(@PathVariable("email") String email) {
-        var id = dbClient.addUser(email);
-        return id;
     }
 
     @PostMapping("/user/{email}/survey")
