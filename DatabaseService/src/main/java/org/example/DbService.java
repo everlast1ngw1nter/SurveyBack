@@ -102,7 +102,9 @@ public class DbService {
 
     public List<Survey> getSurveys(String email) {
         var surveys = surveyRepository.getSurveyByUserEmail(email);
-        return surveys;
+        return surveys.stream()
+                .filter(s -> !s.isDeleted())
+                .toList();
     }
 
     public Long addResponseOnSurvey(String email, UUID surveyId, String body) {
@@ -113,8 +115,10 @@ public class DbService {
         return response.getId();
     }
 
-    public void deleteSurvey(Long surveyId) {
-        surveyRepository.deleteById(surveyId);
+    public void deleteSurvey(UUID surveyId) {
+        var toDelete = surveyRepository.getSurveyById(surveyId);
+        toDelete.setDeleted(true);
+        surveyRepository.save(toDelete);
     }
 
     public void updateSurvey(UUID surveyId, String body) {

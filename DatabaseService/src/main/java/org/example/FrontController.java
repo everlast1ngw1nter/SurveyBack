@@ -66,8 +66,7 @@ public class FrontController {
 
     @DeleteMapping("/survey/{survey_id}")
     public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {
-        // TO DO
-//        dbService.deleteSurvey(surveyId);
+        dbService.deleteSurvey(surveyId);
     }
 
     @PatchMapping("/survey/{survey_id}")

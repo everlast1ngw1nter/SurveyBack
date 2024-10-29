@@ -37,6 +37,8 @@ public class Survey {
     @Column(name = "_to")
     private ZonedDateTime to;
 
+    private boolean isDeleted;
+
     public Survey() {
     }
 
@@ -91,5 +93,13 @@ public class Survey {
 
     public void setTo(ZonedDateTime to) {
         this.to = to;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

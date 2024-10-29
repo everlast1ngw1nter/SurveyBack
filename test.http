@@ -10,7 +10,7 @@ PATCH http://localhost:8080/survey/1
 }
 
 ###
-DELETE http://localhost:8080/survey/1
+DELETE http://localhost:8080/survey/d4016cab-214f-4b27-a872-a8b83fc9889f
 ###
 GET http://localhost:8080/user/jenoshima42@despair.com/surveys
 ###
