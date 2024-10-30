@@ -32,7 +32,7 @@ public class SurveyController {
         return surveyBody;
     }
 
-    @PostMapping(value = "/survey/{survey_id}/access", consumes = "application/json")
+    @PostMapping(value = "/survey/{survey_id}/access")
     public void addSurveyAccess(@PathVariable("survey_id") UUID surveyId,
                                 @RequestBody AccessData accessData) {
         dbClient.addSurveyAccess(surveyId, accessData);

@@ -1,6 +1,9 @@
 package org.example;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import org.example.dto.AccessData;
@@ -96,7 +99,10 @@ public class DbService {
 
     public AccessData getSurveyAccess(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
-        var access = new AccessData(survey.getStatus(), survey.isLimited(), List.of(survey.getFrom(), survey.getTo()));
+        var list = new ArrayList<ZonedDateTime>();
+        list.add(survey.getFrom());
+        list.add(survey.getTo());
+        var access = new AccessData(survey.getStatus(), survey.isLimited(), list);
         return access;
     }
 
