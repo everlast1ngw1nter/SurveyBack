@@ -1,7 +1,7 @@
-package org.example;
+package com.example.demo.controllers;
 
+import com.example.demo.services.ExcelService;
 import java.util.UUID;
-import org.example.services.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
-public class FrontController {
+public class FileController {
 
     private final ExcelService excelService;
 
     @Autowired
-    public FrontController(ExcelService excelService) {
+    public FileController(ExcelService excelService) {
         this.excelService = excelService;
     }
 
