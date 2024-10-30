@@ -14,7 +14,7 @@ DELETE http://localhost:8080/survey/d4016cab-214f-4b27-a872-a8b83fc9889f
 ###
 GET http://localhost:8080/user/jenoshima42@despair.com/surveys
 ###
-GET http://localhost:8081/user/jenoshima42@despair.com/survey/9c9d2208-c34b-46a3-9ad8-9b158336b1b1/generate
+GET http://localhost:8080/user/jenoshima42@despair.com/survey/9c9d2208-c34b-46a3-9ad8-9b158336b1b1/generate
 ###
 POST http://localhost:8080/user/jenoshima42@despair.com
 ###

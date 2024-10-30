@@ -68,6 +68,11 @@ public class DbService {
         createdFilesRepository.save(oldFile);
     }
 
+    public String addUser(User user) {
+        userRepository.save(user);
+        return user.getId().toString();
+    }
+
     public String addUser(String email) {
         var user = new User(email);
         try {
@@ -76,6 +81,10 @@ public class DbService {
             return "User with this email already exists";
         }
         return user.getId().toString();
+    }
+
+    public User getUser(String email) {
+        return userRepository.getUserByEmail(email);
     }
 
     public UUID addSurvey(String email, String survey) {
