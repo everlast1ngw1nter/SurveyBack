@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -31,7 +32,7 @@ public class ExcelService {
         this.objectMapper = objectMapper;
     }
 
-    private SurveyDto getQuestionsFromSurvey(long surveyId) {
+    private SurveyDto getQuestionsFromSurvey(UUID surveyId) {
         var survey = dbClient.getSurvey(surveyId);
         SurveyDto dto;
         try {
@@ -42,7 +43,7 @@ public class ExcelService {
         return dto;
     }
 
-    private List<AnswersDto> getAnswersFromResponses(long surveyId) {
+    private List<AnswersDto> getAnswersFromResponses(UUID surveyId) {
         var resps = dbClient.getResponses(surveyId);
         return resps.stream()
                 .map(ResponseDto::response)
@@ -95,7 +96,7 @@ public class ExcelService {
         return book;
     }
 
-    public byte[] getExcelFile(long surveyId) {
+    public byte[] getExcelFile(UUID surveyId) {
         var questions = getQuestionsFromSurvey(surveyId);
         var answers = getAnswersFromResponses(surveyId);
         var createdFile = dbClient.getCreatedFile(surveyId);

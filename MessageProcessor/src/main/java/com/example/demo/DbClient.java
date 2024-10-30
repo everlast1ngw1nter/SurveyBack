@@ -1,7 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.dto.AccessData;
 import com.example.demo.dto.SurveyWithId;
 import java.util.Objects;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -34,7 +36,7 @@ public class DbClient {
                 .block();
     }
 
-    public String getSurvey(Long id) {
+    public String getSurvey(UUID id) {
         return dbWebClient
                 .get()
                 .uri("/survey/{id}", id)
@@ -43,7 +45,7 @@ public class DbClient {
                 .block();
     }
 
-    public void deleteSurvey(Long id) {
+    public void deleteSurvey(UUID id) {
         dbWebClient
                 .delete()
                 .uri("/survey/{id}", id)
@@ -52,7 +54,7 @@ public class DbClient {
                 .block();
     }
 
-    public void updateSurvey(Long id, String body) {
+    public void updateSurvey(UUID id, String body) {
         dbWebClient
                 .patch()
                 .uri("/survey/{id}", id)
@@ -62,7 +64,7 @@ public class DbClient {
                 .block();
     }
 
-    public String addResponse(String email, Long surveyId, String body) {
+    public String addResponse(String email, UUID surveyId, String body) {
         return dbWebClient
                 .post()
                 .uri("/user/{email}/survey/{survey_id}/answer", email, surveyId)
@@ -81,5 +83,24 @@ public class DbClient {
                         .collectList()
                         .block())
                 .toArray(SurveyWithId[]::new);
+    }
+
+    public void addSurveyAccess(UUID surveyId, AccessData accessData) {
+        dbWebClient
+                .post()
+                .uri("/survey/{id}/access", surveyId)
+                .bodyValue(accessData)
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
+
+    public String getSurveyAccess(UUID surveyId) {
+        return dbWebClient
+                .get()
+                .uri("/survey/{id}/access", surveyId)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
     }
 }

@@ -1,24 +1,21 @@
-package com.example.demo;
+package com.example.demo.controllers;
 
+import com.example.demo.DbClient;
+import com.example.demo.dto.AccessData;
 import com.example.demo.dto.SurveyWithId;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-public class FrontController {
+public class SurveyController {
 
     private final DbClient dbClient;
 
     @Autowired
-    public FrontController(DbClient dbClient) {
+    public SurveyController(DbClient dbClient) {
         this.dbClient = dbClient;
-    }
-
-    @PostMapping("/user/{email}")
-    public String addNewUser(@PathVariable("email") String email) {
-        var id = dbClient.addUser(email);
-        return id;
     }
 
     @PostMapping("/user/{email}/survey")
@@ -30,18 +27,30 @@ public class FrontController {
 
     @GetMapping("/user/{email}/survey/{survey_id}")
     public String returnSurvey(@PathVariable("email") String email,
-                               @PathVariable("survey_id") Long surveyId) {
+                               @PathVariable("survey_id") UUID surveyId) {
         var surveyBody = dbClient.getSurvey(surveyId);
         return surveyBody;
     }
 
+    @PostMapping(value = "/survey/{survey_id}/access")
+    public void addSurveyAccess(@PathVariable("survey_id") UUID surveyId,
+                                @RequestBody AccessData accessData) {
+        dbClient.addSurveyAccess(surveyId, accessData);
+    }
+
+    @GetMapping("/survey/{survey_id}/access")
+    public String getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
+        return dbClient.getSurveyAccess(surveyId);
+    }
+
+
     @DeleteMapping("/survey/{survey_id}")
-    public void deleteSurvey(@PathVariable("survey_id") Long surveyId) {
+    public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {
         dbClient.deleteSurvey(surveyId);
     }
 
     @PatchMapping("/survey/{survey_id}")
-    public void updateSurvey(@PathVariable("survey_id") Long surveyId,
+    public void updateSurvey(@PathVariable("survey_id") UUID surveyId,
                              @RequestBody String body) {
         dbClient.updateSurvey(surveyId, body);
     }
@@ -54,7 +63,7 @@ public class FrontController {
 
     @PostMapping("/user/{email}/survey/{survey_id}/answer")
     public String getAnswerOnSurvey(@PathVariable("email") String email,
-                                    @PathVariable("survey_id") Long surveyId,
+                                    @PathVariable("survey_id") UUID surveyId,
                                     @RequestBody String body) {
         var id = dbClient.addResponse(email, surveyId, body);
         return id.toString();

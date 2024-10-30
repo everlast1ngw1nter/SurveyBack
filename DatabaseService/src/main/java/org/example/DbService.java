@@ -1,7 +1,12 @@
 package org.example;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
+import org.example.dto.AccessData;
 import org.example.models.CreatedFile;
 import org.example.models.Response;
 import org.example.models.Survey;
@@ -34,29 +39,29 @@ public class DbService {
         this.userRepository = userRepository;
     }
 
-    public Survey getSurvey(Long surveyId) {
+    public Survey getSurvey(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
         return survey;
     }
 
-    public List<Response> getResponses(Long surveyId) {
+    public List<Response> getResponses(UUID surveyId) {
         var resps = responseRepository.getResponsesBySurveyId(surveyId);
         return resps;
     }
 
-    public CreatedFile getCreatedFile(Long surveyId) {
+    public CreatedFile getCreatedFile(UUID surveyId) {
         var createdFile = createdFilesRepository.getCreatedFileBySurveyId(surveyId);
         return createdFile;
     }
 
 
-    public void addCreatedFile(Long surveyId, byte[] file, Integer answersCount) {
+    public void addCreatedFile(UUID surveyId, byte[] file, Integer answersCount) {
         var survey = getSurvey(surveyId);
         var newCreatedFile = new CreatedFile(file, answersCount, LocalDateTime.now(), survey);
         createdFilesRepository.save(newCreatedFile);
     }
 
-    public void updateCreatedFile(Long surveyId, byte[] file, Integer answersCount) {
+    public void updateCreatedFile(UUID surveyId, byte[] file, Integer answersCount) {
         var oldFile = getCreatedFile(surveyId);
         oldFile.setFile(file);
         oldFile.setAnswersCount(answersCount);
@@ -74,19 +79,41 @@ public class DbService {
         return user.getId().toString();
     }
 
-    public Long addSurvey(String email, String survey) {
+    public UUID addSurvey(String email, String survey) {
         var user = userRepository.getUserByEmail(email);
         var newSurvey = new Survey(survey, user);
         surveyRepository.save(newSurvey);
         return newSurvey.getId();
     }
 
-    public List<Survey> getSurveys(String email) {
-        var surveys = surveyRepository.getSurveyByUserEmail(email);
-        return surveys;
+    public void addSurveyAccess(UUID surveyId, AccessData body) {
+        var survey = surveyRepository.getSurveyById(surveyId);
+        survey.setStatus(body.status());
+        survey.setLimited(body.isLimited());
+        if (body.timeIntervals() != null && body.timeIntervals().size() == 2) {
+            survey.setFrom(body.timeIntervals().get(0));
+            survey.setTo(body.timeIntervals().get(1));
+        }
+        surveyRepository.save(survey);
     }
 
-    public Long addResponseOnSurvey(String email, Long surveyId, String body) {
+    public AccessData getSurveyAccess(UUID surveyId) {
+        var survey = surveyRepository.getSurveyById(surveyId);
+        var list = new ArrayList<ZonedDateTime>();
+        list.add(survey.getFrom());
+        list.add(survey.getTo());
+        var access = new AccessData(survey.getStatus(), survey.isLimited(), list);
+        return access;
+    }
+
+    public List<Survey> getSurveys(String email) {
+        var surveys = surveyRepository.getSurveyByUserEmail(email);
+        return surveys.stream()
+                .filter(s -> !s.isDeleted())
+                .toList();
+    }
+
+    public Long addResponseOnSurvey(String email, UUID surveyId, String body) {
         var user = userRepository.getUserByEmail(email);
         var survey = surveyRepository.getSurveyById(surveyId);
         var response = new Response(user, survey, body);
@@ -94,11 +121,13 @@ public class DbService {
         return response.getId();
     }
 
-    public void deleteSurvey(Long surveyId) {
-        surveyRepository.deleteById(surveyId);
+    public void deleteSurvey(UUID surveyId) {
+        var toDelete = surveyRepository.getSurveyById(surveyId);
+        toDelete.setDeleted(true);
+        surveyRepository.save(toDelete);
     }
 
-    public void updateSurvey(Long surveyId, String body) {
+    public void updateSurvey(UUID surveyId, String body) {
         var survey = surveyRepository.getSurveyById(surveyId);
         survey.setSurvey(body);
         surveyRepository.save(survey);

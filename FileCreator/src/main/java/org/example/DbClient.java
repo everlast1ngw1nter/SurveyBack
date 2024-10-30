@@ -1,6 +1,7 @@
 package org.example;
 
 import java.util.List;
+import java.util.UUID;
 import org.example.dto.CreatedFileDto;
 import org.example.dto.FileInfoDto;
 import org.example.dto.ResponseDto;
@@ -17,7 +18,7 @@ public class DbClient {
         this.dbWebClient = dbWebClient;
     }
 
-    public String getSurvey(Long id) {
+    public String getSurvey(UUID id) {
         return dbWebClient
                 .get()
                 .uri("/survey/{id}", id)
@@ -26,7 +27,7 @@ public class DbClient {
                 .block();
     }
 
-    public List<ResponseDto> getResponses(Long surveyId) {
+    public List<ResponseDto> getResponses(UUID surveyId) {
         return dbWebClient
                 .get()
                 .uri("/responses/{survey_id}", surveyId)
@@ -36,7 +37,7 @@ public class DbClient {
                 .block();
     }
 
-    public CreatedFileDto getCreatedFile(Long surveyId) {
+    public CreatedFileDto getCreatedFile(UUID surveyId) {
         return dbWebClient
                 .get()
                 .uri("/file/{survey_id}", surveyId)
@@ -56,7 +57,7 @@ public class DbClient {
     }
 
 
-    public void addCreatedFile(byte[] file, Integer answersCount, Long surveyId) {
+    public void addCreatedFile(byte[] file, Integer answersCount, UUID surveyId) {
         dbWebClient
                 .post()
                 .uri("/file/{survey_id}", surveyId)

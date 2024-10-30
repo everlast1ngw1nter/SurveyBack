@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package org.example.dto;
 
 import java.util.UUID;
 

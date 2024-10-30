@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.UUID;
 import org.example.services.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +24,7 @@ public class FrontController {
 
     @GetMapping("/user/{email}/survey/{survey_id}/generate")
     public ResponseEntity<byte[]> getExcelFileOnResponses(@PathVariable("email") String email,
-                                            @PathVariable("survey_id") Long surveyId) {
+                                            @PathVariable("survey_id") UUID surveyId) {
         var generated = excelService.getExcelFile(surveyId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=sample.xlsx");
