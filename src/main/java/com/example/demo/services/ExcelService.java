@@ -2,15 +2,10 @@ package com.example.demo.services;
 
 import com.example.demo.DbService;
 import com.example.demo.dto.AnswersDto;
-import com.example.demo.dto.QuestionAnswerDto;
 import com.example.demo.dto.SurveyDto;
-import com.example.demo.models.Response;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -20,51 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ExcelService {
+public class ExcelService implements ReportFileService {
+
+    private final AnswersDataService answersDataService;
 
     private final DbService dbClient;
 
-    private final ObjectMapper objectMapper;
-
     @Autowired
-    public ExcelService(DbService dbClient, ObjectMapper objectMapper) {
+    public ExcelService(AnswersDataService answersDataService, DbService dbClient) {
+        this.answersDataService = answersDataService;
         this.dbClient = dbClient;
-        this.objectMapper = objectMapper;
-    }
-
-    private SurveyDto getQuestionsFromSurvey(UUID surveyId) {
-        var survey = dbClient.getSurvey(surveyId);
-        SurveyDto dto;
-        try {
-            dto = objectMapper.readValue(survey.getSurvey(), SurveyDto.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return dto;
-    }
-
-    private List<AnswersDto> getAnswersFromResponses(UUID surveyId) {
-        var resps = dbClient.getResponses(surveyId);
-        return resps.stream()
-                .map(Response::getResponse)
-                .map(this::getAnswersFromResponse)
-                .toList();
-
-    }
-
-    private AnswersDto getAnswersFromResponse(String response) {
-        AnswersDto dto;
-        try {
-            Map<String, QuestionAnswerDto> data = objectMapper.readValue(response, objectMapper.getTypeFactory().constructMapType(Map.class, String.class, QuestionAnswerDto.class));
-            var answers = data.values()
-                    .stream()
-                    .map(qaDto -> qaDto.answer)
-                    .toList();
-            dto = new AnswersDto(answers);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return dto;
     }
 
     private void addAllQuestions(Row row, SurveyDto questions) {
@@ -96,9 +56,10 @@ public class ExcelService {
         return book;
     }
 
-    public byte[] getExcelFile(UUID surveyId) {
-        var questions = getQuestionsFromSurvey(surveyId);
-        var answers = getAnswersFromResponses(surveyId);
+    public byte[] getFile(UUID surveyId) {
+        var reportData = answersDataService.getSurveyAndAnswers(surveyId);
+        var questions = reportData.surveyInfo();
+        var answers = reportData.answers();
         var createdFile = dbClient.getCreatedFile(surveyId);
         if (createdFile != null && createdFile.getAnswersCount() == answers.size()) {
             return createdFile.getFile();
