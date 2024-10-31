@@ -8,8 +8,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -28,15 +26,22 @@ public class PdfService implements ReportFileService {
         this.dbClient = dbClient;
     }
 
-    private Document generatePdfFile(SurveyDto questions, List<AnswersDto> answers) {
+    private byte[] generatePdfFile(SurveyDto questions, List<AnswersDto> answers) {
+        var byteArrayOutputStream = new ByteArrayOutputStream();
         var document = new Document();
-        document.open();
-        PdfPTable table = new PdfPTable(3);
-        addTableHeader(table);
-        addRows(table);
-        addCustomRows(table);
-        document.close();
-        return document;
+        try {
+            PdfWriter.getInstance(document, byteArrayOutputStream);
+            document.open();
+            PdfPTable table = new PdfPTable(3);
+            addTableHeader(table);
+            addRows(table);
+            addCustomRows(table);
+            document.add(table);
+            document.close();
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
+        return byteArrayOutputStream.toByteArray();
     }
 
     private void addTableHeader(PdfPTable table) {
@@ -72,17 +77,6 @@ public class PdfService implements ReportFileService {
         var reportData = answersDataService.getSurveyAndAnswers(surveyId);
         var questions = reportData.surveyInfo();
         var answers = reportData.answers();
-        try {
-            return getBytesOfExcelFile(questions,  answers);
-        } catch (DocumentException e) {
-            return new byte[0];
-        }
-    }
-
-    private byte[] getBytesOfExcelFile(SurveyDto questions, List<AnswersDto> answers) throws DocumentException {
-        var document = generatePdfFile(questions,  answers);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        PdfWriter.getInstance(document, byteArrayOutputStream);
-        return byteArrayOutputStream.toByteArray();
+        return generatePdfFile(questions,  answers);
     }
 }
