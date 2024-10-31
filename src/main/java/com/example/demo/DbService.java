@@ -1,14 +1,12 @@
 package com.example.demo;
 
 import com.example.demo.dto.AccessData;
-import com.example.demo.models.CreatedFile;
-import com.example.demo.models.Response;
-import com.example.demo.models.Survey;
-import com.example.demo.models.User;
+import com.example.demo.models.*;
 import com.example.demo.repos.CreatedFilesRepository;
 import com.example.demo.repos.ResponseRepository;
 import com.example.demo.repos.SurveyRepository;
 import com.example.demo.repos.UserRepository;
+import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -36,6 +34,18 @@ public class DbService {
         this.surveyRepository = surveyRepository;
         this.responseRepository = responseRepository;
         this.userRepository = userRepository;
+    }
+
+    @PostConstruct
+    private void addAdminAndUser() {
+        // password - Junko Enoshima
+        var admin = new User("Junko Enoshima", "$2a$10$3R/wpWW8ST5jDEFznCZnKeWnWt6B8HOG/BdZVuAJoqFH32B4XHVvK");
+        admin.setRole(Role.ADMIN);
+        userRepository.save(admin);
+        // password - Mukuro Ikusaba
+        var user = new User("Mukuro Ikusaba", "$2a$10$fOUnJNzgi2HUDB6EUzAHxuj230fFf9nE8nsMLFe2QBeQVWkuECccq");
+        user.setRole(Role.USER);
+        userRepository.save(user);
     }
 
     public Survey getSurvey(UUID surveyId) {
