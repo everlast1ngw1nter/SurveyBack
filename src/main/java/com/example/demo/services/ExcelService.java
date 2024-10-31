@@ -89,7 +89,7 @@ public class ExcelService {
 
     private Workbook generateExcelFile(SurveyDto questions,  List<AnswersDto> answers) {
         Workbook book = new XSSFWorkbook();
-        var sheet = book.createSheet(questions.name);
+        var sheet = book.createSheet("Answers");
         var row = sheet.createRow(0);
         addAllQuestions(row, questions);
         addAllAnswersInRows(sheet, answers, 1);
