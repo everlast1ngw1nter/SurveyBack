@@ -24,7 +24,11 @@ public class SpringSecurityConfig {
         httpSecurity.authorizeHttpRequests((auth) ->
                 auth.requestMatchers("/registration").permitAll()
                         .requestMatchers("/swagger-ui/index.html").hasRole("ADMIN")
+                        .requestMatchers("/v3/api-docs/**").hasRole("ADMIN")
                         .anyRequest().authenticated()).formLogin(Customizer.withDefaults());
+        httpSecurity
+                .csrf()
+                .disable();
         return httpSecurity.build();
     }
 }
