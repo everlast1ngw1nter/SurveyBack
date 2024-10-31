@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,10 +26,8 @@ public class SpringSecurityConfig {
                 auth.requestMatchers("/registration").permitAll()
                         .requestMatchers("/swagger-ui/index.html").hasRole("ADMIN")
                         .requestMatchers("/v3/api-docs/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()).formLogin(Customizer.withDefaults());
-        httpSecurity
-                .csrf()
-                .disable();
+                        .anyRequest().authenticated()).formLogin(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
 }
