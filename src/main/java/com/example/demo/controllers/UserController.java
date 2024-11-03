@@ -1,24 +1,32 @@
 package com.example.demo.controllers;
 
 import com.example.demo.DbService;
+import com.example.demo.dto.UserDto;
+import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    private final DbService dbService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(DbService dbService) {
-        this.dbService = dbService;
+    public UserController(UserService userService) {
+
+        this.userService = userService;
     }
 
-    @PostMapping("/{email}")
-    public String addNewUser(@PathVariable("email") String email) {
-        var id = dbService.addUser(email);
-        return id;
+    @PostMapping("/registration")
+    public String registrationUser(@RequestBody UserDto user) {
+        var a = user;
+        return userService.registerUser(user);
+    }
+
+    @PostMapping("/login")
+    public String loginUser(@RequestBody UserDto user) {
+        return userService.loginUser(user);
     }
 }
