@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     private final DbService dbService;
 
@@ -53,17 +53,7 @@ public class UserService implements UserDetailsService {
         if(!passwordEncoder.matches(user.password(), currUser.getPassword())){
             return "Введите правильный пароль";
         }
-        return JwtGenerator.generateToken(user.email());
+        return JwtGenerator.generateToken(user.email(), currUser.getPassword());
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        var user = dbService.getUser(name);
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),
-                mapRoleToAuthority(user.getRole()));
-    }
-
-    public Collection<? extends GrantedAuthority> mapRoleToAuthority(Role role) {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role.name()));
-    }
 }
