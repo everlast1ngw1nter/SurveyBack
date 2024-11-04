@@ -25,7 +25,6 @@ public class SpringSecurityConfig {
     }
 
     @Autowired
-    @Lazy
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
