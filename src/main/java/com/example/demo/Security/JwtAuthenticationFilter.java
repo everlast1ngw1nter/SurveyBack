@@ -18,12 +18,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtGenerator jwtGenerator;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException, IOException {
-        String requestURI = request.getRequestURI();
+        var requestURI = request.getRequestURI();
         if (requestURI.equals("/user/registration") || requestURI.equals("/user/login")) {
             filterChain.doFilter(request, response);
             return;
         }
-        String token = request.getHeader("authorization");
+        var token = request.getHeader("authorization");
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
             if (jwtGenerator.isValidToken(token)) {

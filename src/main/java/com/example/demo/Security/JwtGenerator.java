@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.security.SignatureException;
@@ -15,15 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@Component
+@Service
 public class JwtGenerator {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
+    private final DbService dbService;
+
     @Autowired
-    private DbService dbService;
+    public JwtGenerator(DbService dbService){
+        this.dbService = dbService;
+    }
 
     public static String generateToken(String email, String password) {
-        long expirationTime = 1000 * 60 * 60; // 1 час
+        var expirationTime = 1000 * 60 * 60; // 1 час
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("password", password);

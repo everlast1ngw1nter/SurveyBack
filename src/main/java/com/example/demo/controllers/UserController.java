@@ -15,13 +15,11 @@ public class UserController {
 
     @Autowired
     public UserController(UserService userService) {
-
         this.userService = userService;
     }
 
     @PostMapping("/registration")
     public String registrationUser(@RequestBody UserDto user) {
-        var a = user;
         return userService.registerUser(user);
     }
 
