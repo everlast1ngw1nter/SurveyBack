@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 
 import com.example.demo.DbService;
 import com.example.demo.dto.AccessData;
+import com.example.demo.dto.AcсessDataResponce;
 import com.example.demo.dto.SurveyWithId;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class SurveyController {
     }
 
     @GetMapping("/survey/{survey_id}/access")
-    public AccessData getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
+    public AcсessDataResponce getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
         return dbService.getSurveyAccess(surveyId);
     }
 

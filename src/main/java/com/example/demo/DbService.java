@@ -1,6 +1,8 @@
 package com.example.demo;
 
 import com.example.demo.dto.AccessData;
+import com.example.demo.dto.AccessStatus;
+import com.example.demo.dto.AcсessDataResponce;
 import com.example.demo.models.*;
 import com.example.demo.repos.CreatedFilesRepository;
 import com.example.demo.repos.ResponseRepository;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -102,13 +105,23 @@ public class DbService {
         surveyRepository.save(survey);
     }
 
-    public AccessData getSurveyAccess(UUID surveyId) {
+    public boolean isAvailableSurvey(Survey survey){
+        if (Objects.equals(survey.getStatus(), AccessStatus.Active.toString()))
+            if(!survey.isLimited())
+                return true;
+            else if (survey.getFrom().isBefore(ZonedDateTime.now()) && survey.getTo().isAfter(ZonedDateTime.now()) ) {
+                return true;
+            }
+        return false;
+    }
+
+    public AcсessDataResponce getSurveyAccess(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
         var list = new ArrayList<ZonedDateTime>();
         list.add(survey.getFrom());
         list.add(survey.getTo());
-        var access = new AccessData(survey.getStatus(), survey.isLimited(), list);
-        return access;
+        return new AcсessDataResponce(isAvailableSurvey(survey),
+                survey.isLimited(), survey.getFrom().toString(), survey.getTo().toString());
     }
 
     public List<Survey> getSurveys(String email) {
