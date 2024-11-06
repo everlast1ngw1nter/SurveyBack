@@ -23,15 +23,18 @@ public class CreatedFile {
 
     private byte[] file;
 
+    private TypeFile typeFile;
+
     public CreatedFile() {
     }
 
-    public CreatedFile(byte[] file, Integer answersCount, LocalDateTime creationTime, Survey survey) {
+    public CreatedFile(byte[] file, Integer answersCount, LocalDateTime creationTime, Survey survey, TypeFile typeFile) {
         id = survey.getId();
         this.file = file;
         this.answersCount = answersCount;
         this.creationTime = creationTime;
         this.survey = survey;
+        this.typeFile = typeFile;
     }
 
     public UUID getId() {
@@ -65,4 +68,8 @@ public class CreatedFile {
     public void setFile(byte[] file) {
         this.file = file;
     }
+
+    public TypeFile getTypeFile() { return typeFile; }
+
+    public void setTypeFile(TypeFile typeFile) { this.typeFile = typeFile; }
 }

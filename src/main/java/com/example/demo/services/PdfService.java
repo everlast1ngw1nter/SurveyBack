@@ -4,6 +4,7 @@ import com.example.demo.DbService;
 import com.example.demo.dto.AnswersDto;
 import com.example.demo.dto.QuestionsDto;
 import com.example.demo.dto.SurveyDto;
+import com.example.demo.models.TypeFile;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -72,6 +73,16 @@ public class PdfService implements ReportFileService {
         var reportData = answersDataService.getSurveyAndAnswers(surveyId);
         var questions = reportData.surveyInfo();
         var answers = reportData.answers();
-        return generatePdfFile(questions,  answers);
+        var createdFile = dbClient.getCreatedFile(surveyId, TypeFile.PDF);
+        if (createdFile != null && createdFile.getAnswersCount() == answers.size()) {
+            return createdFile.getFile();
+        }
+        var pdfBytes = generatePdfFile(questions,  answers);
+        if (createdFile != null) {
+            dbClient.updateCreatedFile(createdFile.getId(), pdfBytes, answers.size(), TypeFile.PDF);
+        } else {
+            dbClient.addCreatedFile(surveyId, pdfBytes, answers.size(), TypeFile.PDF);
+        }
+        return pdfBytes;
     }
 }

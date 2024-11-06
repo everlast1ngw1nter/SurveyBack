@@ -48,20 +48,20 @@ public class DbService {
         return resps;
     }
 
-    public CreatedFile getCreatedFile(UUID surveyId) {
-        var createdFile = createdFilesRepository.getCreatedFileBySurveyId(surveyId);
+    public CreatedFile getCreatedFile(UUID surveyId, TypeFile typeFile) {
+        var createdFile = createdFilesRepository.getCreatedFileBySurveyIdAndTypeFile(surveyId, typeFile);
         return createdFile;
     }
 
 
-    public void addCreatedFile(UUID surveyId, byte[] file, Integer answersCount) {
+    public void addCreatedFile(UUID surveyId, byte[] file, Integer answersCount, TypeFile typeFile) {
         var survey = getSurvey(surveyId);
-        var newCreatedFile = new CreatedFile(file, answersCount, LocalDateTime.now(), survey);
+        var newCreatedFile = new CreatedFile(file, answersCount, LocalDateTime.now(), survey, typeFile);
         createdFilesRepository.save(newCreatedFile);
     }
 
-    public void updateCreatedFile(UUID surveyId, byte[] file, Integer answersCount) {
-        var oldFile = getCreatedFile(surveyId);
+    public void updateCreatedFile(UUID surveyId, byte[] file, Integer answersCount, TypeFile typeFile) {
+        var oldFile = getCreatedFile(surveyId, typeFile);
         oldFile.setFile(file);
         oldFile.setAnswersCount(answersCount);
         oldFile.setCreationTime(LocalDateTime.now());

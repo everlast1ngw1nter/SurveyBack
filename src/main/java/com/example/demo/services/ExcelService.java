@@ -7,6 +7,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+
+import com.example.demo.models.TypeFile;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -60,15 +62,15 @@ public class ExcelService implements ReportFileService {
         var reportData = answersDataService.getSurveyAndAnswers(surveyId);
         var questions = reportData.surveyInfo();
         var answers = reportData.answers();
-        var createdFile = dbClient.getCreatedFile(surveyId);
+        var createdFile = dbClient.getCreatedFile(surveyId, TypeFile.EXCEL);
         if (createdFile != null && createdFile.getAnswersCount() == answers.size()) {
             return createdFile.getFile();
         }
         var excelBytes = getBytesOfExcelFile(questions, answers);
         if (createdFile != null) {
-            dbClient.updateCreatedFile(createdFile.getId(), excelBytes, answers.size());
+            dbClient.updateCreatedFile(createdFile.getId(), excelBytes, answers.size(), TypeFile.EXCEL);
         } else {
-            dbClient.addCreatedFile(surveyId, excelBytes, answers.size());
+            dbClient.addCreatedFile(surveyId, excelBytes, answers.size(), TypeFile.EXCEL);
         }
         return excelBytes;
     }
