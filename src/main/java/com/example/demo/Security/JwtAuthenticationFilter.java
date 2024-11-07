@@ -35,8 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        var requestURIelements = request.getRequestURI().split("/");
+        var emailInRequest = requestURIelements[2];
+
         token = token.substring(7);
-        var tokenInfo = jwtGenerator.isValidToken(token);
+        var tokenInfo = jwtGenerator.isValidToken(token, emailInRequest);
         if (tokenInfo.IsValid()) {
             var userDetails = userService.loadUserByUsername(tokenInfo.username());
             SecurityContext context = SecurityContextHolder.createEmptyContext();

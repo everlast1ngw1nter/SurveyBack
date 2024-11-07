@@ -58,7 +58,7 @@ public class UserService implements UserDetailsService{
         if(!passwordEncoder.matches(user.password(), currUser.getPassword())){
             return "Введите правильный пароль";
         }
-        return JwtGenerator.generateToken(user.email(), currUser.getPassword());
+        return JwtGenerator.generateToken(user.email());
     }
 
     @Override

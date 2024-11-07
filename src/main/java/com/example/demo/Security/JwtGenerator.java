@@ -2,6 +2,7 @@ package com.example.demo.Security;
 
 import com.example.demo.DbService;
 import com.example.demo.dto.InfoInToken;
+import com.example.demo.models.Role;
 import com.example.demo.models.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -28,22 +29,18 @@ public class JwtGenerator {
         this.dbService = dbService;
     }
 
-    public static String generateToken(String email, String password) {
+    public static String generateToken(String email) {
         var expirationTime = 1000 * 60 * 60; // 1 час
-
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("password", password);
 
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
-                .addClaims(claims)
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public InfoInToken isValidToken(String token) {
+    public InfoInToken isValidToken(String token, String emailInRequest) {
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
@@ -58,9 +55,7 @@ public class JwtGenerator {
             if (user == null) {
                 return new InfoInToken(false, "");
             }
-            var password = (String) claims.getBody().get("password");
-            var dbPassword = user.getPassword();
-            return new InfoInToken(Objects.equals(password, dbPassword), email);
+            return new InfoInToken(emailInRequest.equals(email), email);
         } catch (MalformedJwtException ex) {
             // Неправильный формат токена.
             return new InfoInToken(false, "");

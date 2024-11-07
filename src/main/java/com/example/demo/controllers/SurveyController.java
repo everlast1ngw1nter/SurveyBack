@@ -33,24 +33,24 @@ public class SurveyController {
         return surveyBody.getSurvey();
     }
 
-    @PostMapping(value = "/survey/{survey_id}/access")
+    @PostMapping(value = "/user/{email}/survey/{survey_id}/access")
     public void addSurveyAccess(@PathVariable("survey_id") UUID surveyId,
                                 @RequestBody AccessData accessData) {
         dbService.addSurveyAccess(surveyId, accessData);
     }
 
-    @GetMapping("/survey/{survey_id}/access")
+    @GetMapping("/user/{email}/survey/{survey_id}/access")
     public AcсessDataResponce getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
         return dbService.getSurveyAccess(surveyId);
     }
 
 
-    @DeleteMapping("/survey/{survey_id}")
+    @DeleteMapping("/user/{email}/survey/{survey_id}")
     public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {
         dbService.deleteSurvey(surveyId);
     }
 
-    @PatchMapping("/survey/{survey_id}")
+    @PatchMapping("/user/{email}/survey/{survey_id}")
     public void updateSurvey(@PathVariable("survey_id") UUID surveyId,
                              @RequestBody String body) {
         dbService.updateSurvey(surveyId, body);
