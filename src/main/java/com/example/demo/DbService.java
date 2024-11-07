@@ -117,8 +117,8 @@ public class DbService {
 
     public AcсessDataResponce getSurveyAccess(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
-        var from = survey.getFrom() == null ? "" : toString();
-        var to = survey.getTo() == null ? "" : toString();
+        var from = survey.getFrom() == null ? "" : survey.getFrom().toString();
+        var to = survey.getTo() == null ? "" : survey.getTo().toString();
 
         return new AcсessDataResponce(isAvailableSurvey(survey),
                 survey.isLimited(), from, to);
