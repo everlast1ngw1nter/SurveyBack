@@ -117,11 +117,11 @@ public class DbService {
 
     public AcсessDataResponce getSurveyAccess(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
-        var list = new ArrayList<ZonedDateTime>();
-        list.add(survey.getFrom());
-        list.add(survey.getTo());
+        var from = survey.getFrom() == null ? "" : toString();
+        var to = survey.getTo() == null ? "" : toString();
+
         return new AcсessDataResponce(isAvailableSurvey(survey),
-                survey.isLimited(), survey.getFrom().toString(), survey.getTo().toString());
+                survey.isLimited(), from, to);
     }
 
     public List<Survey> getSurveys(String email) {
