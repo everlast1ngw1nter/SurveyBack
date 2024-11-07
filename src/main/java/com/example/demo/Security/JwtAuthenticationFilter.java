@@ -1,13 +1,12 @@
 package com.example.demo.Security;
 
-import com.example.demo.DbService;
+import com.example.demo.services.JwtGeneratorService;
 import com.example.demo.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -21,11 +20,11 @@ import java.util.Objects;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtGenerator jwtGenerator;
+    private final JwtGeneratorService jwtGenerator;
     private final UserService userService;
 
     @Autowired
-    public JwtAuthenticationFilter(JwtGenerator jwtGenerator, UserService userService) {
+    public JwtAuthenticationFilter(JwtGeneratorService jwtGenerator, UserService userService) {
         this.jwtGenerator = jwtGenerator;
         this.userService = userService;
     }

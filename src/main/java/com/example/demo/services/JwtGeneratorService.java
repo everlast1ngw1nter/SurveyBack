@@ -1,31 +1,23 @@
-package com.example.demo.Security;
+package com.example.demo.services;
 
 import com.example.demo.DbService;
 import com.example.demo.dto.InfoInToken;
-import com.example.demo.models.Role;
-import com.example.demo.models.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.security.SignatureException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
 @Service
-public class JwtGenerator {
+public class JwtGeneratorService {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     private final DbService dbService;
 
     @Autowired
-    public JwtGenerator(DbService dbService){
+    public JwtGeneratorService(DbService dbService){
         this.dbService = dbService;
     }
 
