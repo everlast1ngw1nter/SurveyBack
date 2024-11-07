@@ -1,6 +1,7 @@
 package com.example.demo.Security;
 
 import com.example.demo.DbService;
+import com.example.demo.dto.InfoInToken;
 import com.example.demo.models.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -42,36 +43,36 @@ public class JwtGenerator {
                 .compact();
     }
 
-    public boolean isValidToken(String token) {
+    public InfoInToken isValidToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
                     .parseClaimsJws(token);
 
             if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
+                return new InfoInToken(false, "");
             }
 
             var email = claims.getBody().getSubject();
             var user = dbService.getUser(email);
             if (user == null) {
-                return false;
+                return new InfoInToken(false, "");
             }
             var password = (String) claims.getBody().get("password");
             var dbPassword = user.getPassword();
-            return Objects.equals(password, dbPassword);
+            return new InfoInToken(Objects.equals(password, dbPassword), email);
         } catch (MalformedJwtException ex) {
             // Неправильный формат токена.
-            return false;
+            return new InfoInToken(false, "");
         } catch (ExpiredJwtException ex) {
             // Токен истек.
-            return false;
+            return new InfoInToken(false, "");
         } catch (UnsupportedJwtException ex) {
             // Неподдерживаемый тип токена.
-            return false;
+            return new InfoInToken(false, "");
         } catch (IllegalArgumentException ex) {
             // Неверный токен.
-            return false;
+            return new InfoInToken(false, "");
         }
     }
 }

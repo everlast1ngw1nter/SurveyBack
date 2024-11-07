@@ -5,9 +5,14 @@ import com.example.demo.Security.JwtGenerator;
 import com.example.demo.dto.UserDto;
 import com.example.demo.models.Role;
 import com.example.demo.models.User;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService{
 
     private final DbService dbService;
 
@@ -56,4 +61,20 @@ public class UserService {
         return JwtGenerator.generateToken(user.email(), currUser.getPassword());
     }
 
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        var currUser = dbService.getUser(username);
+        return new org.springframework.security.core.userdetails.User(
+                currUser.getEmail(),
+                currUser.getPassword(),
+                mapRoles(currUser)
+        );
+    }
+
+    private Collection<GrantedAuthority> mapRoles(User appUser)
+    {
+        List<GrantedAuthority> collectionRoles = new ArrayList<>();
+        collectionRoles.add(new SimpleGrantedAuthority("ROLE_" + appUser.getRole()));
+        return collectionRoles;
+    }
 }

@@ -18,12 +18,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SpringSecurityConfig {
 
-    @Bean
-    public PasswordEncoder getPasswordEncoder()
-    {
-        return new BCryptPasswordEncoder();
-    }
-
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -32,7 +26,7 @@ public class SpringSecurityConfig {
         return http.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/**").permitAll()
+                        .requestMatchers("/user/registration", "/user/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
