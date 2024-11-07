@@ -1,4 +1,5 @@
-PATCH http://localhost:8080/survey/1
+PATCH http://localhost:8080/survey/b192cabe-14d7-4fc7-96d8-04eeeeaf005f
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzMwOTk4MDM2LCJleHAiOjE3MzEwMDE2MzZ9.NlaPrmJj0r1LoO27ZeCO-c4UYtDPjScTecpvv6rNQiE
 
 {
   "Name": "PATCH",
@@ -10,9 +11,13 @@ PATCH http://localhost:8080/survey/1
 }
 
 ###
-DELETE http://localhost:8080/survey/d4016cab-214f-4b27-a872-a8b83fc9889f
+DELETE http://localhost:8080/survey/b192cabe-14d7-4fc7-96d8-04eeeeaf005f
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzMwOTk4MDM2LCJleHAiOjE3MzEwMDE2MzZ9.NlaPrmJj0r1LoO27ZeCO-c4UYtDPjScTecpvv6rNQiE
+
 ###
-GET http://localhost:8080/user/jenoshima42@despair.com/surveys
+GET http://localhost:8080/user/user/surveys
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzMwOTk4MDM2LCJleHAiOjE3MzEwMDE2MzZ9.NlaPrmJj0r1LoO27ZeCO-c4UYtDPjScTecpvv6rNQiE
+
 ###
 GET http://localhost:8080/user/jenoshima42@despair.com/survey/9c9d2208-c34b-46a3-9ad8-9b158336b1b1/generate
 ###
@@ -20,7 +25,8 @@ POST http://localhost:8080/user/jenoshima42@despair.com
 ###
 GET http://localhost:8080/user/jenoshima42@despair.com/survey/9
 ###
-POST http://localhost:8080/user/jenoshima42@despair.com/survey
+POST http://localhost:8080/user/user/survey
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzMwOTk4MDM2LCJleHAiOjE3MzEwMDE2MzZ9.NlaPrmJj0r1LoO27ZeCO-c4UYtDPjScTecpvv6rNQiE
 
 {
   "Name": "Преподаватели Радиофака",
@@ -62,14 +68,16 @@ POST http://localhost:8080/user/jenoshima42@despair.com/survey
       ]
 }
 ###
-POST http://localhost:8080/user/jenoshima42@despair.com/survey/9c9d2208-c34b-46a3-9ad8-9b158336b1b1/answer
+POST http://localhost:8080/user/user/survey/9c9d2208-c34b-46a3-9ad8-9b158336b1b1/answer
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzMwOTk4MDM2LCJleHAiOjE3MzEwMDE2MzZ9.NlaPrmJj0r1LoO27ZeCO-c4UYtDPjScTecpvv6rNQiE
+
 
 {"1111":{"question":"Кто такой Хлопин?","answer":"Физик"},"2222":{"question":"Кто такой Косолобов?","answer":"Машина, Физик"},"3333":{"question":"Что Вы думаете о практиках по терверу/матстату?","answer":"Хз"},"4444":{"question":"На каком Вы курсе? Введите только цифру","answer":"3"},"5555":{"question":"Вам нравится Ваша секция по физкультуре?","answer":"Да"},"6666":{"question":"Укажите Вашу дату рождения:","answer":"1999-01-01"},"7777":{"question":"Предоставьте ссылку на Ваш проект на GitLab","answer":"https://github.com/StasanSas"},"8888":{"question":"Прикрепите базу ответов по БЖД","answer":"BZHD 2022.pdf"},"9999":{"question":"Выберите Вашу страну проживания","answer":"Россия"},"11111":{"question":"Оцените от 1 до 10 МатМех","answer":"10"}}
 
 ###
 
-POST http://localhost:8080/survey/aa8a8b04-6eb8-487e-9ec0-9f6d0ce81391/access
-Content-Type: application/json
+POST http://localhost:8080/survey/b192cabe-14d7-4fc7-96d8-04eeeeaf005f/access
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiaWF0IjoxNzMwOTk4NDc2LCJleHAiOjE3MzEwMDIwNzZ9.Wg8beTCgFLzc_PgsbWng-3OHlNw4dwKVLA95tu4jj_U
 
 {
   "status": "Active",
@@ -80,3 +88,24 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8080/survey/aa8a8b04-6eb8-487e-9ec0-9f6d0ce81391/access
+
+###
+
+POST http://localhost:8080/user/registration
+Content-Type: application/json
+
+{
+"email": "user",
+"password": "user"
+}
+
+###
+
+POST http://localhost:8080/user/login
+Content-Type: application/json
+
+{
+  "email": "user",
+  "password": "user"
+}
+
