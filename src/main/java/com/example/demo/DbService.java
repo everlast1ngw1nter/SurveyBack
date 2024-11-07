@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.dto.AccessData;
 import com.example.demo.dto.AccessStatus;
-import com.example.demo.dto.AcсessDataResponce;
+import com.example.demo.dto.AccessDataResponse;
 import com.example.demo.models.*;
 import com.example.demo.repos.CreatedFilesRepository;
 import com.example.demo.repos.ResponseRepository;
@@ -10,7 +10,6 @@ import com.example.demo.repos.SurveyRepository;
 import com.example.demo.repos.UserRepository;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -115,12 +114,12 @@ public class DbService {
         return false;
     }
 
-    public AcсessDataResponce getSurveyAccess(UUID surveyId) {
+    public AccessDataResponse getSurveyAccess(UUID surveyId) {
         var survey = surveyRepository.getSurveyById(surveyId);
         var from = survey.getFrom() == null ? "" : survey.getFrom().toString();
         var to = survey.getTo() == null ? "" : survey.getTo().toString();
 
-        return new AcсessDataResponce(isAvailableSurvey(survey),
+        return new AccessDataResponse(isAvailableSurvey(survey),
                 survey.isLimited(), from, to);
     }
 
