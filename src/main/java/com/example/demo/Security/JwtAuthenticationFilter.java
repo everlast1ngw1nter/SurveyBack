@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -36,6 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         var requestURIelements = request.getRequestURI().split("/");
+        if (requestURIelements.length<=2 || !Objects.equals(requestURIelements[1], "user")){
+            filterChain.doFilter(request, response);
+            return;
+        }
         var emailInRequest = requestURIelements[2];
 
         token = token.substring(7);
