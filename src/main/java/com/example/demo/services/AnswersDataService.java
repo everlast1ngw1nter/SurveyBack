@@ -44,7 +44,6 @@ public class AnswersDataService {
                 .map(Response::getResponse)
                 .map(this::getAnswersFromResponse)
                 .toList();
-
     }
 
     private AnswersDto getAnswersFromResponse(String response) {
