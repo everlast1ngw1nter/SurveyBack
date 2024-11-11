@@ -46,10 +46,10 @@ public class UserService implements UserDetailsService{
     public String loginUser(UserDto user){
         var currUser = dbService.getUser(user.email());
         if (currUser == null) {
-            return "Пользователь с таким email не существует";
+            return null;
         }
         if(!passwordEncoder.matches(user.password(), currUser.getPassword())){
-            return "Введите правильный пароль";
+            return null;
         }
         return JwtGeneratorService.generateToken(user.email());
     }
