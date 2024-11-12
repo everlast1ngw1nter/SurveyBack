@@ -1,27 +1,21 @@
 package com.example.demo.dto;
 
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
 public class StatisticOnQuestionBuilder {
-    private Dictionary<String, Integer> amountSelectedByVariant;
+    private Map<String, Integer> amountSelectedByVariant;
 
     public StatisticOnQuestionBuilder(){
-        amountSelectedByVariant = new Hashtable<>();
+        amountSelectedByVariant = new HashMap<>();
     }
 
     public void CountAnswer(String answer){
-        if (amountSelectedByVariant.get(answer) != null){
+        if (amountSelectedByVariant.containsKey(answer)){
             amountSelectedByVariant.put(answer, amountSelectedByVariant.get(answer)+1);
         } else {
             amountSelectedByVariant.put(answer, 1);
         }
     }
 
-
-    public Dictionary<String, Integer> GetAnswerStatistic(){ return amountSelectedByVariant; }
-
-
+    public Map<String, Integer> GetAnswerStatistic(){ return amountSelectedByVariant; }
 }

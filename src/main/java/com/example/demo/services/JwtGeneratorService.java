@@ -48,17 +48,7 @@ public class JwtGeneratorService {
                 return new InfoInToken(false, "");
             }
             return new InfoInToken(emailInRequest.equals(email), email);
-        } catch (MalformedJwtException ex) {
-            // Неправильный формат токена.
-            return new InfoInToken(false, "");
-        } catch (ExpiredJwtException ex) {
-            // Токен истек.
-            return new InfoInToken(false, "");
-        } catch (UnsupportedJwtException ex) {
-            // Неподдерживаемый тип токена.
-            return new InfoInToken(false, "");
-        } catch (IllegalArgumentException ex) {
-            // Неверный токен.
+        } catch (Exception ex) {
             return new InfoInToken(false, "");
         }
     }
