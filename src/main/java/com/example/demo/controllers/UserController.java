@@ -14,12 +14,9 @@ public class UserController {
 
     private final UserService userService;
 
-    private final CheckingAvailabilityService checkingAvailabilityService;
-
     @Autowired
-    public UserController(UserService userService, CheckingAvailabilityService checkingAvailabilityService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.checkingAvailabilityService = checkingAvailabilityService;
     }
 
     @PostMapping("/registration")
