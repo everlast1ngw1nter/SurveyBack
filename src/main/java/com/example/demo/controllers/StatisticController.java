@@ -21,7 +21,7 @@ public class StatisticController {
         this.statisticService = statisticService;
     }
 
-    @GetMapping("/survey-statistic/{survey_id}")
+    @GetMapping("/survey/{survey_id}/statistic")
     public StatisticOnQuestionDto[] returnSurvey(@PathVariable("survey_id") UUID surveyId) {
         var surveyStatistic = statisticService.getStatisticOfSurvey(surveyId);
         return surveyStatistic;

@@ -5,6 +5,10 @@ import com.example.demo.dto.AccessData;
 import com.example.demo.dto.AccessDataResponse;
 import com.example.demo.dto.SurveyWithId;
 import java.util.UUID;
+
+import com.example.demo.dto.dtoForParseBody.AccessDataAndEmail;
+import com.example.demo.dto.dtoForParseBody.AnswerOnSurveyAndEmail;
+import com.example.demo.dto.dtoForParseBody.SurveyDataAndEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,45 +23,43 @@ public class SurveyController {
         this.dbService = dbService;
     }
 
-    @PostMapping("/user/{email}/survey")
-    public String addNewSurvey(@PathVariable("email") String email,
-                               @RequestBody String body) {
-        var id = dbService.addSurvey(email, body);
+    @PostMapping("/survey")
+    public String addNewSurvey(@RequestBody SurveyDataAndEmail body) {
+        var id = dbService.addSurvey(body.email, body.surveyData);
         return id.toString();
     }
 
-    @GetMapping("/user/{email}/survey/{survey_id}")
-    public String returnSurvey(@PathVariable("email") String email,
-                               @PathVariable("survey_id") UUID surveyId) {
+    @GetMapping("/survey/{survey_id}")
+    public String returnSurvey(@PathVariable("survey_id") UUID surveyId) {
         var surveyBody = dbService.getSurvey(surveyId);
         return surveyBody.getSurvey();
     }
 
-    @PostMapping(value = "/user/{email}/survey/{survey_id}/access")
+    @PostMapping(value = "/survey/{survey_id}/access")
     public void addSurveyAccess(@PathVariable("survey_id") UUID surveyId,
-                                @RequestBody AccessData accessData) {
-        dbService.addSurveyAccess(surveyId, accessData);
+                                @RequestBody AccessDataAndEmail accessData) {
+        dbService.addSurveyAccess(surveyId, accessData.accessData);
     }
 
-    @GetMapping("/user/{email}/survey/{survey_id}/access")
+    @GetMapping("/survey/{survey_id}/access")
     public AccessDataResponse getSurveyAccess(@PathVariable("survey_id") UUID surveyId) {
         return dbService.getSurveyAccess(surveyId);
     }
 
 
-    @DeleteMapping("/user/{email}/survey/{survey_id}")
+    @DeleteMapping("/survey/{survey_id}")
     public void deleteSurvey(@PathVariable("survey_id") UUID surveyId) {
         dbService.deleteSurvey(surveyId);
     }
 
-    @PatchMapping("/user/{email}/survey/{survey_id}")
+    @PatchMapping("/survey/{survey_id}")
     public void updateSurvey(@PathVariable("survey_id") UUID surveyId,
-                             @RequestBody String body) {
-        dbService.updateSurvey(surveyId, body);
+                             @RequestBody SurveyDataAndEmail body) {
+        dbService.updateSurvey(surveyId, body.surveyData);
     }
 
-    @GetMapping("/user/{email}/surveys")
-    public SurveyWithId[] returnSurveys(@PathVariable("email") String email) {
+    @GetMapping("/surveys")
+    public SurveyWithId[] returnSurveys(@RequestParam String email) {
         var surveys = dbService.getSurveys(email);
         var surveysWithId = surveys.stream()
                 .map(val -> new SurveyWithId(val.getId(), val.getSurvey()))
@@ -66,11 +68,10 @@ public class SurveyController {
     }
 
 
-    @PostMapping("/user/{email}/survey/{survey_id}/answer")
-    public String getAnswerOnSurvey(@PathVariable("email") String email,
-                                    @PathVariable("survey_id") UUID surveyId,
-                                    @RequestBody String body) {
-        var id = dbService.addResponseOnSurvey(email, surveyId, body);
+    @PostMapping("/survey/{survey_id}/answer")
+    public String getAnswerOnSurvey(@PathVariable("survey_id") UUID surveyId,
+                                    @RequestBody AnswerOnSurveyAndEmail body) {
+        var id = dbService.addResponseOnSurvey(body.email, surveyId, body.answer);
         return id.toString();
     }
 }

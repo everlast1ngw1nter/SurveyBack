@@ -26,9 +26,8 @@ public class FileController {
         this.pdfService = pdfService;
     }
 
-    @GetMapping("/user/{email}/survey/{survey_id}/generate_excel")
-    public ResponseEntity<byte[]> getExcelFileOnResponses(@PathVariable("email") String email,
-                                            @PathVariable("survey_id") UUID surveyId) {
+    @GetMapping("/survey/{survey_id}/generate_excel")
+    public ResponseEntity<byte[]> getExcelFileOnResponses(@PathVariable("survey_id") UUID surveyId) {
         var generated = excelService.getFile(surveyId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=sample.xlsx");
@@ -37,9 +36,8 @@ public class FileController {
         return new ResponseEntity<>(generated, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{email}/survey/{survey_id}/generate_pdf")
-    public ResponseEntity<byte[]> getPdfFileOnResponses(@PathVariable("email") String email,
-                                                          @PathVariable("survey_id") UUID surveyId) {
+    @GetMapping("/survey/{survey_id}/generate_pdf")
+    public ResponseEntity<byte[]> getPdfFileOnResponses(@PathVariable("survey_id") UUID surveyId) {
         var generated = pdfService.getFile(surveyId);
 
         HttpHeaders headers = new HttpHeaders();

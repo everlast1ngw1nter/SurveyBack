@@ -32,7 +32,7 @@ public class JwtGeneratorService {
                 .compact();
     }
 
-    public InfoInToken isValidToken(String token, String emailInRequest) {
+    public InfoInToken isValidToken(String token) {
         try {
             Jws<Claims> claims = Jwts.parser()
                     .setSigningKey(SECRET_KEY)
@@ -47,7 +47,7 @@ public class JwtGeneratorService {
             if (user == null) {
                 return new InfoInToken(false, "");
             }
-            return new InfoInToken(emailInRequest.equals(email), email);
+            return new InfoInToken(true, email);
         } catch (Exception ex) {
             return new InfoInToken(false, "");
         }
