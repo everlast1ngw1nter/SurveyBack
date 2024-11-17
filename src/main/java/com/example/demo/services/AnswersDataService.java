@@ -2,7 +2,6 @@ package com.example.demo.services;
 
 import com.example.demo.DbService;
 import com.example.demo.dto.AnswersDto;
-import com.example.demo.dto.QuestionAnswerDto;
 import com.example.demo.dto.SimpleReportData;
 import com.example.demo.dto.SurveyDto;
 import com.example.demo.models.Response;
@@ -49,11 +48,8 @@ public class AnswersDataService {
     private AnswersDto getAnswersFromResponse(String response) {
         AnswersDto dto;
         try {
-            Map<String, QuestionAnswerDto> data = objectMapper.readValue(response, objectMapper.getTypeFactory().constructMapType(Map.class, String.class, QuestionAnswerDto.class));
-            var answers = data.values()
-                    .stream()
-                    .map(qaDto -> qaDto.answer)
-                    .toList();
+            Map<String, String> data = objectMapper.readValue(response, objectMapper.getTypeFactory().constructMapType(Map.class, String.class, String.class));
+            var answers = data.values().stream().toList();
             dto = new AnswersDto(answers);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
