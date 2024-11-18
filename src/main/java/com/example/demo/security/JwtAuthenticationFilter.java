@@ -1,4 +1,4 @@
-package com.example.demo.Security;
+package com.example.demo.security;
 
 import com.example.demo.services.JwtGeneratorService;
 import com.example.demo.services.UserService;
@@ -35,15 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        var requestURIelements = request.getRequestURI().split("/");
-        if (requestURIelements.length<=2 || !Objects.equals(requestURIelements[1], "user")){
-            filterChain.doFilter(request, response);
-            return;
-        }
-        var emailInRequest = requestURIelements[2];
-
         token = token.substring(7);
-        var tokenInfo = jwtGenerator.isValidToken(token, emailInRequest);
+        var tokenInfo = jwtGenerator.isValidToken(token);
         if (tokenInfo.IsValid()) {
             var userDetails = userService.loadUserByUsername(tokenInfo.username());
             SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -57,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.setContext(context);
             filterChain.doFilter(request, response);
         } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setStatus(HttpStatus.FORBIDDEN.value());
         }
     }
 }
