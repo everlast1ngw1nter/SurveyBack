@@ -1,0 +1,27 @@
+services:
+  java-app:
+    image: 04bb068265ed  # id image
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+    networks:
+      - backend
+  postgresql:
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: survey
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+    networks:
+      - backend
+
+volumes:
+  postgresql: { }
+
+networks:
+  backend: { }
