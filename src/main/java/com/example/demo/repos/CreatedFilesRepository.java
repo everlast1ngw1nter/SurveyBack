@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface CreatedFilesRepository extends JpaRepository<CreatedFile, Long> {
 
     CreatedFile getCreatedFileBySurveyIdAndTypeFile(UUID survey_id, TypeFile type_file);
+
+    CreatedFile getCreatedFileById(UUID reportId);
 }
