@@ -1,9 +1,6 @@
 package com.example.demo.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,9 +9,8 @@ import java.util.UUID;
 public class CreatedFile {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    private Integer answersCount;
 
     private LocalDateTime creationTime;
 
@@ -25,16 +21,17 @@ public class CreatedFile {
 
     private TypeFile typeFile;
 
+    private ReportStatus reportStatus;
+
     public CreatedFile() {
     }
 
-    public CreatedFile(byte[] file, Integer answersCount, LocalDateTime creationTime, Survey survey, TypeFile typeFile) {
-        id = survey.getId();
+    public CreatedFile(byte[] file, LocalDateTime creationTime, Survey survey, TypeFile typeFile, ReportStatus reportStatus) {
         this.file = file;
-        this.answersCount = answersCount;
         this.creationTime = creationTime;
         this.survey = survey;
         this.typeFile = typeFile;
+        this.reportStatus = reportStatus;
     }
 
     public UUID getId() {
@@ -49,16 +46,8 @@ public class CreatedFile {
         return creationTime;
     }
 
-    public Integer getAnswersCount() {
-        return answersCount;
-    }
-
     public Survey getSurvey() {
         return survey;
-    }
-
-    public void setAnswersCount(Integer answersCount) {
-        this.answersCount = answersCount;
     }
 
     public void setCreationTime(LocalDateTime creationTime) {
@@ -72,4 +61,12 @@ public class CreatedFile {
     public TypeFile getTypeFile() { return typeFile; }
 
     public void setTypeFile(TypeFile typeFile) { this.typeFile = typeFile; }
+
+    public ReportStatus getReportStatus() {
+        return reportStatus;
+    }
+
+    public void setReportStatus(ReportStatus reportStatus) {
+        this.reportStatus = reportStatus;
+    }
 }
