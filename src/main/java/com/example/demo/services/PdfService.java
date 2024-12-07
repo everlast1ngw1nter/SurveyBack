@@ -12,6 +12,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PdfService implements ReportFileService {
+    private static final String FONT_PATH = Paths.get("fonts", "ofont.ru_Arial.ttf").toString();
     private final AnswersDataService answersDataService;
 
     private final DbService dbClient;
@@ -36,7 +38,7 @@ public class PdfService implements ReportFileService {
             PdfWriter.getInstance(document, byteArrayOutputStream);
             document.open();
             PdfPTable table = new PdfPTable(questions.survey.size());
-            BaseFont baseFont = BaseFont.createFont("fonts\\ofont.ru_Arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+            BaseFont baseFont = BaseFont.createFont(FONT_PATH, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
             Font font = new Font(baseFont);
             addTableHeader(table, questions.survey, font);
             addRows(table, answers, font);

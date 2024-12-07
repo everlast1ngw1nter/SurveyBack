@@ -1,27 +1,36 @@
 services:
   java-app:
-    image: 04bb068265ed  # id image
+    build: ./
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
     ports:
       - "8080:8080"
     depends_on:
-      - postgresql
+      - postgres
     networks:
       - backend
-  postgresql:
+    restart: unless-stopped
+
+  postgres:
     image: postgres:16
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: survey
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - postgresql:/var/lib/postgresql/data
+      - postgres:/var/lib/postgres/data
     networks:
       - backend
+    restart: unless-stopped
 
 volumes:
-  postgresql: { }
+  postgres: { }
 
 networks:
   backend: { }
