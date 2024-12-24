@@ -6,5 +6,7 @@ import java.util.UUID;
 @FunctionalInterface
 public interface ReportFileService {
 
-    byte[] getFile(UUID surveyId);
+    byte[] getFile(UUID surveyId, UUID reportId);
+
+
 }

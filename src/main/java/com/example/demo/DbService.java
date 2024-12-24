@@ -47,24 +47,22 @@ public class DbService {
         return resps;
     }
 
-    public CreatedFile getCreatedFile(UUID surveyId, TypeFile typeFile) {
-        var createdFile = createdFilesRepository.getCreatedFileBySurveyIdAndTypeFile(surveyId, typeFile);
-        return createdFile;
+    public CreatedFile getCreatedFile(UUID reportId) {
+        return createdFilesRepository.getCreatedFileById(reportId);
     }
 
-
-    public void addCreatedFile(UUID surveyId, byte[] file, Integer answersCount, TypeFile typeFile) {
+    public UUID addProcessingFile(UUID surveyId, TypeFile typeFile) {
         var survey = getSurvey(surveyId);
-        var newCreatedFile = new CreatedFile(file, answersCount, LocalDateTime.now(), survey, typeFile);
+        var newCreatedFile = new CreatedFile(null, LocalDateTime.now(), survey, typeFile, ReportStatus.IN_PROCESS);
         createdFilesRepository.save(newCreatedFile);
+        return newCreatedFile.getId();
     }
 
-    public void updateCreatedFile(UUID surveyId, byte[] file, Integer answersCount, TypeFile typeFile) {
-        var oldFile = getCreatedFile(surveyId, typeFile);
-        oldFile.setFile(file);
-        oldFile.setAnswersCount(answersCount);
-        oldFile.setCreationTime(LocalDateTime.now());
-        createdFilesRepository.save(oldFile);
+    public void updateCreatedFile(UUID fileId, byte[] file, ReportStatus reportStatus) {
+        var report = getCreatedFile(fileId);
+        report.setFile(file);
+        report.setReportStatus(reportStatus);
+        createdFilesRepository.save(report);
     }
 
     public String addUser(User user) {

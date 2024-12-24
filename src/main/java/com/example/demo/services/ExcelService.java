@@ -3,6 +3,7 @@ package com.example.demo.services;
 import com.example.demo.DbService;
 import com.example.demo.dto.AnswersDto;
 import com.example.demo.dto.SurveyDto;
+import com.example.demo.models.ReportStatus;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -58,29 +59,24 @@ public class ExcelService implements ReportFileService {
         return book;
     }
 
-    public byte[] getFile(UUID surveyId) {
+    public byte[] getFile(UUID surveyId, UUID reportId) {
         var reportData = answersDataService.getSurveyAndAnswers(surveyId);
         var questions = reportData.surveyInfo();
         var answers = reportData.answers();
-        var createdFile = dbClient.getCreatedFile(surveyId, TypeFile.EXCEL);
-        if (createdFile != null && createdFile.getAnswersCount() == answers.size()) {
-            return createdFile.getFile();
-        }
-        var excelBytes = getBytesOfExcelFile(questions, answers);
-        if (createdFile != null) {
-            dbClient.updateCreatedFile(createdFile.getId(), excelBytes, answers.size(), TypeFile.EXCEL);
-        } else {
-            dbClient.addCreatedFile(surveyId, excelBytes, answers.size(), TypeFile.EXCEL);
+        byte[] excelBytes = null;
+        try {
+            excelBytes = getBytesOfExcelFile(questions, answers);
+            dbClient.updateCreatedFile(reportId, excelBytes, ReportStatus.COMPLETED);
+        } catch (IOException e) {
+            dbClient.updateCreatedFile(reportId, null, ReportStatus.ERROR);
         }
         return excelBytes;
     }
 
-    private byte[] getBytesOfExcelFile(SurveyDto questions, List<AnswersDto> answers) {
+    private byte[] getBytesOfExcelFile(SurveyDto questions, List<AnswersDto> answers) throws IOException {
         var outputStream = new ByteArrayOutputStream();
         try(var workbook = generateExcelFile(questions,  answers)) {
             workbook.write(outputStream);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         return outputStream.toByteArray();
     }
