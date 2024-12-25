@@ -30,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException, IOException {
+        System.out.println("This is a string");
         var token = request.getHeader("authorization");
         if (token == null || !token.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);

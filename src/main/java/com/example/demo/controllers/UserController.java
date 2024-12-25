@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.dto.UserDto;
+import com.example.demo.services.JwtGeneratorService;
 import com.example.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,7 @@ public class UserController {
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtGeneratorService jwtGeneratorService) {
         this.userService = userService;
     }
 
@@ -26,4 +27,5 @@ public class UserController {
     public String loginUser(@RequestBody UserDto user) {
         return userService.loginUser(user);
     }
+
 }
